@@ -1,4 +1,4 @@
-package com.yesnoheun3.pages.taskrecord
+package com.yesnoheun3.pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,13 +12,13 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 fun TaskRecord(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color(0xFFFFFFFF)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Task Record")
-    }
+   Column(
+       modifier = modifier
+           .fillMaxSize()
+           .background(Color(0xFFFFFFFF)),
+       verticalArrangement = Arrangement.Center,
+       horizontalAlignment = Alignment.CenterHorizontally
+   ) {
+    Text(text = "Time Setting")
+   }
 }

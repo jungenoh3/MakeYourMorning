@@ -20,8 +20,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.yesnoheun3.pages.taskrecord.TaskRecord
-import com.yesnoheun3.pages.TimeSetting
+import com.yesnoheun3.pages.timesetting.TimeSetting
+import com.yesnoheun3.pages.TaskRecord
 import com.yesnoheun3.pages.User
 
 @Composable
