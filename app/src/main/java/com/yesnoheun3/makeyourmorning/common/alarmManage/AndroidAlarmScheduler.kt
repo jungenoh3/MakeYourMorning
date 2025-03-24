@@ -5,6 +5,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -17,16 +18,29 @@ class AndroidAlarmScheduler (private val context: Context) {
             putExtra("EXTRA_MESSAGE", "Sending Alarm")
         }
 
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            LocalDateTime.now().plusSeconds(10).atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
-            PendingIntent.getBroadcast(
-                context,
-                item.hashCode(),
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + 10 * 1000,
+                PendingIntent.getBroadcast(
+                    context,
+                    item.hashCode(),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
             )
-        )
+        } else {
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + 10 * 1000,
+                PendingIntent.getBroadcast(
+                    context,
+                    item.hashCode(),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+            )
+        }
     }
 
     fun cancel(item: AlarmItem){
