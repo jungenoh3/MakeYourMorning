@@ -1,104 +1,132 @@
 package com.yesnoheun3.makeyourmorning
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.BottomNavigation
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.BottomNavigationItem
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Create
+import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.app.ActivityCompat
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.yesnoheun3.makeyourmorning.pages.timesetting.TimeSetting
 import com.yesnoheun3.makeyourmorning.pages.TaskRecord
 import com.yesnoheun3.makeyourmorning.pages.User
 
+sealed class BottomNavItem(
+    val title: String,
+    val screenRoute: String,
+    val icon: ImageVector
+){
+    object TimeSetting : BottomNavItem("시간 설정", "timeSetting", Icons.Rounded.Notifications)
+    object TaskRecord : BottomNavItem("한 일들", "taskRecord", Icons.Rounded.DateRange)
+    object User : BottomNavItem("설정", "user", Icons.Rounded.Person)
+}
+
+@Composable
+fun NavigationGraph(navController: NavHostController){
+    NavHost(navController = navController, startDestination = BottomNavItem.TimeSetting.screenRoute) {
+        composable(route =  BottomNavItem.TimeSetting.screenRoute) {
+            TimeSetting()
+        }
+        composable(route = BottomNavItem.TaskRecord.screenRoute) {
+            TaskRecord()
+        }
+        composable(route = BottomNavItem.User.screenRoute) {
+            User()
+        }
+    }
+}
+
+
 @SuppressLint("LaunchDuringComposition")
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
-    val context = LocalContext.current
+fun MainScreen() {
+    val navController = rememberNavController()
 
-    val navItemList = listOf(
-        NavItem("TimeSetting", Icons.Rounded.Notifications),
-        NavItem("TaskRecord", Icons.Rounded.Create),
-        NavItem("User", Icons.Rounded.Person)
+    val items = listOf(
+        BottomNavItem.TimeSetting,
+        BottomNavItem.TaskRecord,
+        BottomNavItem.User
     )
 
-    var selectedIndex by remember {
-        mutableIntStateOf(0)
-    }
-
-    val requestPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            // 권한 허용됨
-            System.out.println("알림 권한 허용됨")
-        } else {
-            // 권한 거부됨
-            System.out.println("알림 권한 거부됨")
-        }
-    }
-    LaunchedEffect(Unit) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // API 33+
-            val isPermissionGranted = ActivityCompat.checkSelfPermission(
-                context, "android.permission.POST_NOTIFICATIONS"
-            ) == PackageManager.PERMISSION_GRANTED
-
-            if (!isPermissionGranted) {
-                requestPermissionLauncher.launch("android.permission.POST_NOTIFICATIONS")
-            }
-        }
-    }
-
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            NavigationBar {
-                navItemList.forEachIndexed{ index, navItem ->
-                    NavigationBarItem(
-                        selected = selectedIndex == index,
-                        onClick = {
-                                  selectedIndex = index
+            BottomNavigation(
+                modifier = Modifier
+                    .height(70.dp),
+                backgroundColor = Color.White,
+                contentColor = Color.DarkGray
+            ) {
+                items.forEach { item ->
+                    BottomNavigationItem(
+                        modifier = Modifier
+                            .align(alignment = Alignment.CenterVertically),
+                        label = @Composable {
+                            Text(
+                                text = item.title,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp
+                            )
                         },
-                        icon = { Icon(imageVector = navItem.icon, contentDescription = "Icon") },
-                        label ={
-                            Text(text = navItem.label)
+                        selected = currentRoute == item.screenRoute,
+                        onClick = {
+                            navController.navigate(item.screenRoute)  {
+                                navController.graph.startDestinationRoute?.let {
+                                    popUpTo(it) {
+                                        saveState = true
+                                    }
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        icon = {
+                            Icon(
+                                item.icon,
+                                "Navigation button",
+                                modifier = Modifier.padding(6.dp))
                         }
                     )
                 }
             }
         }
     ) {innerPadding ->
-        ContentScreen(modifier = Modifier.padding(innerPadding), selectedIndex)
+        CustomNavGraph(innerPadding, navController)
     }
 }
 
 @Composable
-fun ContentScreen(modifier: Modifier = Modifier, selectedIndex : Int) {
-    System.out.println("selectedIndex: $selectedIndex")
-
-    when(selectedIndex){
-        0-> TimeSetting(modifier)
-        1-> TaskRecord()
-        2-> User()
+fun CustomNavGraph(innerPadding: PaddingValues, navController: NavHostController) {
+    Box(modifier = Modifier.padding(innerPadding)){
+        NavigationGraph(navController = navController)
     }
+
 }
