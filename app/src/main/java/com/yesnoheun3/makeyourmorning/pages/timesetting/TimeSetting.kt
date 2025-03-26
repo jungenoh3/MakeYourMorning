@@ -3,6 +3,7 @@
 package com.yesnoheun3.makeyourmorning.pages.timesetting
 
 import android.content.Context
+import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,7 +33,7 @@ fun TimeSetting(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val scheduler = AndroidAlarmScheduler(context)
 
-    val tz = TimeZone.getTimeZone(ZoneId.systemDefault())
+    val tz = TimeZone.getDefault()
     val currentTime = Calendar.getInstance(tz)
 
     val timePickerState = rememberTimePickerState(

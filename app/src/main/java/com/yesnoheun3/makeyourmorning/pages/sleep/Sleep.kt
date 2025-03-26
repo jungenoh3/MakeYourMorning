@@ -20,6 +20,7 @@ class SleepActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        System.out.println("Sleep Activity 실행")
         val stopService = Intent(this, AlarmService::class.java)
         stopService(stopService)
 
