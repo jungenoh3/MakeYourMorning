@@ -13,7 +13,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
-import com.yesnoheun3.makeyourmorning.MainLifeCycleCallback
+import com.yesnoheun3.makeyourmorning.utilities.MainLifeCycleCallback
 import com.yesnoheun3.makeyourmorning.R
 import com.yesnoheun3.makeyourmorning.pages.sleep.SleepActivity
 

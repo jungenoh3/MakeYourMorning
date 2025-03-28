@@ -7,8 +7,9 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <application
-        android:name=".MainApp"
+        android:name=".utilities.MainApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -40,8 +41,25 @@
         <receiver android:name=".common.alarmManage.AlarmReceiver" />
         <service
             android:name=".common.alarmManage.AlarmService"
+            android:foregroundServiceType="mediaPlayback">
+        </service>
+
+        <service android:name=".utilities.MainAccessibilityService"
+            android:exported="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessbility_service_config"/>
+        </service>
+
+        <service
+            android:name=".utilities.OverlayService"
             android:foregroundServiceType="mediaPlayback"
-            />
+            >
+        </service>
 
     </application>
 
