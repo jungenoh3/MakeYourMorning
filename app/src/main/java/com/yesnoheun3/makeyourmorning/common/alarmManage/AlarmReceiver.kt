@@ -8,6 +8,9 @@ import android.os.Build
 
 class AlarmReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
+
+        // 서비스 시작 말고... 알림을 통해 fullScreen을 한다면?
+
         val serviceIntent = Intent(context, AlarmService::class.java)
         if (intent != null){
             serviceIntent.putExtras(intent)

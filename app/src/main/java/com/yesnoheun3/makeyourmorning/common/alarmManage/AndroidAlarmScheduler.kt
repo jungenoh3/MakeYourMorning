@@ -21,7 +21,7 @@ class AndroidAlarmScheduler (private val context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + 1 * 1000,
+                System.currentTimeMillis() + 10 * 1000,
                 PendingIntent.getBroadcast(
                     context,
                     item.hashCode(),

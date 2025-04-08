@@ -1,7 +1,6 @@
 package com.yesnoheun3.makeyourmorning
 
 import android.annotation.SuppressLint
-import android.app.NotificationManager
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,37 +27,44 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.NotificationCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.yesnoheun3.makeyourmorning.pages.timesetting.TimeSetting
+import com.yesnoheun3.makeyourmorning.pages.time.TimeScreen
 import com.yesnoheun3.makeyourmorning.pages.TaskRecord
 import com.yesnoheun3.makeyourmorning.pages.User
+import com.yesnoheun3.makeyourmorning.pages.time.AddTimeScreen
+import com.yesnoheun3.makeyourmorning.pages.time.SleepTimeModel
 
 sealed class BottomNavItem(
     val title: String,
     val screenRoute: String,
     val icon: ImageVector
 ){
-    object TimeSetting : BottomNavItem("시간 설정", "timeSetting", Icons.Rounded.Notifications)
+    object TimeSetting : BottomNavItem("시간 설정", "time", Icons.Rounded.Notifications)
     object TaskRecord : BottomNavItem("한 일들", "taskRecord", Icons.Rounded.DateRange)
     object User : BottomNavItem("설정", "user", Icons.Rounded.Person)
 }
 
 @Composable
 fun NavigationGraph(navController: NavHostController){
+    val viewModel: SleepTimeModel = viewModel()
+
     NavHost(navController = navController, startDestination = BottomNavItem.TimeSetting.screenRoute) {
         composable(route =  BottomNavItem.TimeSetting.screenRoute) {
-            TimeSetting()
+            TimeScreen(onClick = { navController.navigate("addTime") }, viewModel = viewModel)
         }
         composable(route = BottomNavItem.TaskRecord.screenRoute) {
             TaskRecord()
         }
         composable(route = BottomNavItem.User.screenRoute) {
             User()
+        }
+        composable(route = "addTime") {
+            AddTimeScreen(popBack = { navController.popBackStack() }, viewModel = viewModel)
         }
     }
 }
@@ -77,8 +83,6 @@ fun MainScreen() {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
-
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
