@@ -6,7 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 
-class MainApp: Application() {
+class MainApplication: Application() {
 
     private lateinit var foregroundDetector: MainLifeCycleCallback
 

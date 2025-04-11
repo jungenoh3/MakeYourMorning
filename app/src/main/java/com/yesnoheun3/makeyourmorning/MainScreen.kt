@@ -37,7 +37,7 @@ import com.yesnoheun3.makeyourmorning.pages.time.TimeScreen
 import com.yesnoheun3.makeyourmorning.pages.TaskRecord
 import com.yesnoheun3.makeyourmorning.pages.User
 import com.yesnoheun3.makeyourmorning.pages.time.AddTimeScreen
-import com.yesnoheun3.makeyourmorning.pages.time.SleepTimeModel
+import com.yesnoheun3.makeyourmorning.pages.time.AlarmTimeViewModel
 
 sealed class BottomNavItem(
     val title: String,
@@ -51,7 +51,7 @@ sealed class BottomNavItem(
 
 @Composable
 fun NavigationGraph(navController: NavHostController){
-    val viewModel: SleepTimeModel = viewModel()
+    val viewModel: AlarmTimeViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = BottomNavItem.TimeSetting.screenRoute) {
         composable(route =  BottomNavItem.TimeSetting.screenRoute) {

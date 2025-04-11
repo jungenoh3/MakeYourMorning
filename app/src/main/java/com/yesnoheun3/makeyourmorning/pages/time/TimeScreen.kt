@@ -32,11 +32,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yesnoheun3.makeyourmorning.common.PRIMARY_COLOR
-import com.yesnoheun3.makeyourmorning.common.alarmManage.AlarmItem
 import com.yesnoheun3.makeyourmorning.common.alarmManage.AndroidAlarmScheduler
+import java.time.LocalDateTime
+import java.util.Calendar
 
 @Composable
-fun TimeScreen(onClick: () -> Unit, viewModel: SleepTimeModel) {
+fun TimeScreen(onClick: () -> Unit, viewModel: AlarmTimeViewModel) {
     val context = LocalContext.current
     val scheduler = AndroidAlarmScheduler(context)
 
@@ -93,12 +94,10 @@ fun TimeScreen(onClick: () -> Unit, viewModel: SleepTimeModel) {
                         onCheckedChanged = { isChecked ->
                             viewModel.updateIsOn(index, isChecked)
 
-                            val item = AlarmItem(time = instanceItem[index].time)
-
                             if (isChecked) {
-                                scheduler.schedule(item)
+                                scheduler.schedule(instanceItem[index])
                             } else {
-                                scheduler.cancel(item)
+                                scheduler.cancel(instanceItem[index])
                             }
                         })
                     }

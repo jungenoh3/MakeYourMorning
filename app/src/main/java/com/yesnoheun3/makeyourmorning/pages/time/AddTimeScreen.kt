@@ -28,15 +28,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yesnoheun3.makeyourmorning.common.PRIMARY_COLOR
+import com.yesnoheun3.makeyourmorning.common.alarmManage.AndroidAlarmScheduler
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTimeScreen(popBack: () -> Unit, viewModel: SleepTimeModel){
+fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel){
+    val context = LocalContext.current
+    val scheduler = AndroidAlarmScheduler(context)
 
     val daysOfWeekNum = listOf<Int>(2, 3, 4, 5, 6, 7, 1)
     val daysOfWeek = listOf<String>("월", "화", "수", "목", "금", "토", "일")
@@ -102,14 +106,13 @@ fun AddTimeScreen(popBack: () -> Unit, viewModel: SleepTimeModel){
         TimePicker(state = timePickerState)
 
         TextButton(onClick = {
-            val pickedTime = Calendar.getInstance().apply {
-                set(Calendar.HOUR_OF_DAY, timePickerState.hour)
-                set(Calendar.MINUTE, timePickerState.minute)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
-            }
+            // 처음에 실행할 때 추가
+            viewModel.addItem(
+                hour = timePickerState.hour,
+                minute = timePickerState.minute,
+                daysOfWeek = selectedDays)
 
-            viewModel.addItem(pickedTime, selectedDays)
+            scheduler.schedule(viewModel.last)
 
             popBack()
         }) {

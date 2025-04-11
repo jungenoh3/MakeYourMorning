@@ -6,51 +6,75 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import java.time.LocalDateTime
-import java.time.ZoneId
+import com.yesnoheun3.makeyourmorning.pages.time.AlarmTime
+import java.util.Calendar
 
 class AndroidAlarmScheduler (private val context: Context) {
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
     @SuppressLint("ScheduleExactAlarm")
-    fun schedule(item: AlarmItem){
+    fun schedule(item: AlarmTime){
+
+        System.out.println("알림을 보냅니다")
+
         val intent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra("EXTRA_MESSAGE", "Sending Alarm")
+            putExtra("com.yesnoheun3.makeyourmorning.Id", item.id)
+            putExtra("com.yesnoheun3.makeyourmorning.Hour", item.hour)
+            putExtra("com.yesnoheun3.makeyourmorning.Minute", item.minute)
+            putExtra("com.yesnoheun3.makeyourmorning.DaysOfWeek", item.daysOfWeek.toIntArray())
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            item.id.hashCode(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val now = Calendar.getInstance()
+        var nextAlarmTime: Calendar? = null
+
+        for (i in 0..6) {
+            val cal = Calendar.getInstance().apply {
+                add(Calendar.DATE, i)
+                set(Calendar.HOUR_OF_DAY, item.hour)
+                set(Calendar.MINUTE, item.minute)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+            val dayOfWeek = cal.get(Calendar.DAY_OF_WEEK)
+
+            if ((item.daysOfWeek.isEmpty() || item.daysOfWeek.contains(dayOfWeek))
+                && cal.after(now)) {
+                nextAlarmTime = cal
+                break
+            }
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + 10 * 1000,
-                PendingIntent.getBroadcast(
-                    context,
-                    item.hashCode(),
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
+                Calendar.getInstance().timeInMillis + 5 * 1000, // nextAlarmTime!!.timeInMillis,
+                pendingIntent
             )
         } else {
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + 10 * 1000,
-                PendingIntent.getBroadcast(
-                    context,
-                    item.hashCode(),
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
+                Calendar.getInstance().timeInMillis + 5 * 1000, // nextAlarmTime!!.timeInMillis,
+                pendingIntent
             )
         }
     }
 
-    fun cancel(item: AlarmItem){
+    fun cancel(item: AlarmTime){
         alarmManager.cancel(
             PendingIntent.getBroadcast(
                 context,
-                item.hashCode(),
+                item.id.hashCode(),
                 Intent(context, AlarmReceiver::class.java),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         )
+        System.out.println("알림을 취소했습니다.")
     }
 }

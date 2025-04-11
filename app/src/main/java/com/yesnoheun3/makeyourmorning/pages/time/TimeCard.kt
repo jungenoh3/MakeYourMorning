@@ -43,7 +43,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
-import java.util.Calendar
 import java.util.Locale
 
 fun stringDaysOfWeek(dayOfWeeks: List<Int>): String {
@@ -110,7 +109,6 @@ fun <T> SwipeToDeleteContainer(
 
 }
 
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DeleteBackground( swipeDismissState: DismissState) {
@@ -136,10 +134,8 @@ fun DeleteBackground( swipeDismissState: DismissState) {
 
 }
 
-
-
 @Composable
-fun TimeCard(data: SleepTime, onCheckedChanged: (Boolean) -> Unit){
+fun TimeCard(data: AlarmTime, onCheckedChanged: (Boolean) -> Unit){
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -151,12 +147,12 @@ fun TimeCard(data: SleepTime, onCheckedChanged: (Boolean) -> Unit){
             verticalArrangement = Arrangement.Center
         ) {
             Text(String.format(Locale.KOREA, "%02d : %02d",
-                data.time.get(Calendar.HOUR_OF_DAY),
-                data.time.get(Calendar.MINUTE)
+                data.hour,
+                data.minute
             ),
                 fontSize = 20.sp
                 )
-            Text(stringDaysOfWeek(data.dayOfWeeks),
+            Text(stringDaysOfWeek(data.daysOfWeek),
                 fontSize = 15.sp
                 )
         }

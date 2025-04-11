@@ -25,19 +25,19 @@ class AlarmService: Service() {
         }
         System.out.println("서비스가 작동합니다!")
 
-        val hasPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ContextCompat.checkSelfPermission(
-                applicationContext, Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-        } else {
-            true
-        }
-
-        if (!hasPermission) {
-            stopSelf()
-            // 뭐 여기에 알람 허가해주세요 같은거 해놓던가...
-            return START_NOT_STICKY
-        }
+//        val hasPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            ContextCompat.checkSelfPermission(
+//                applicationContext, Manifest.permission.POST_NOTIFICATIONS
+//            ) == PackageManager.PERMISSION_GRANTED
+//        } else {
+//            true
+//        }
+//
+//        if (!hasPermission) {
+//            stopSelf()
+//            // 뭐 여기에 알람 허가해주세요 같은거 해놓던가...
+//            return START_NOT_STICKY
+//        }
 
         val sleepIntent = Intent(this, SleepActivity::class.java)
         val sleepPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
