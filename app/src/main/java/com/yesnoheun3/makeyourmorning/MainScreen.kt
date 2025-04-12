@@ -65,15 +65,22 @@ fun NavigationGraph(navController: NavHostController){
         composable(route = BottomNavItem.User.screenRoute) {
             User()
         }
-        composable(route = "addTime?index={index}",
-            arguments = listOf(navArgument("index") {
+        composable(route = "addTime?id={id}&isSleep={isSleep}",
+            arguments = listOf(navArgument("id") {
                 type = NavType.StringType
                 nullable = true
                 defaultValue = null
+                },
+                navArgument("isSleep") {
+                    type = NavType.BoolType
+                    nullable = false
+                    defaultValue = true
                 }
             )
-        ) { backStackEntry -> val index = backStackEntry.arguments?.getString("index")
-            AddTimeScreen(popBack = { navController.popBackStack() }, viewModel = viewModel, index = index)
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")
+            val isSleep = backStackEntry.arguments?.getBoolean("isSleep")
+            AddTimeScreen(popBack = { navController.popBackStack() }, viewModel = viewModel, id = id, isSleep = isSleep!!)
         }
     }
 }

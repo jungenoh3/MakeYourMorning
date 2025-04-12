@@ -10,23 +10,47 @@ class AlarmTimeViewModel : ViewModel() {
     val last: AlarmTime get() = _items.last()
 
     init {
-        _items.clear()
+        _items.add(
+            AlarmTime(
+                hour = 19,
+                minute = 0,
+                isSleep = true,
+                daysOfWeek = listOf(1, 2),
+                isOn = true
+            )
+        )
+        _items.add(
+            AlarmTime(
+                hour = 10,
+                minute = 2,
+                isSleep = false,
+                daysOfWeek = listOf(1, 2),
+                isOn = true
+            )
+        )
     }
 
-    fun updateIsOn(index: Int, isOn: Boolean){
+    fun getIndex(id: String): Int {
+        return _items.indexOfFirst { it.id == id }
+    }
+
+    fun updateIsOn(id: String, isOn: Boolean){
+        val index = getIndex(id)
         _items[index] = _items[index].copy(isOn = isOn)
     }
 
-    fun updateTime(index: Int, hour: Int, minute: Int, daysOfWeek: List<Int>){
+    fun updateTime(id: String, hour: Int, minute: Int, daysOfWeek: List<Int>){
+        val index = getIndex(id)
         _items[index] = _items[index].copy(hour = hour, minute = minute, daysOfWeek = daysOfWeek)
     }
 
-    fun addItem(hour: Int, minute: Int, daysOfWeek: List<Int>){
+    fun addItem(hour: Int, minute: Int, daysOfWeek: List<Int>, isSleep: Boolean){
         _items.add(AlarmTime(
             hour = hour,
             minute = minute,
             daysOfWeek = daysOfWeek.sorted(),
-            isOn = true
+            isOn = true,
+            isSleep = isSleep
         ))
     }
 

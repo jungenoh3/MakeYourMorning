@@ -7,5 +7,6 @@ data class AlarmTime (
     val hour: Int,
     val minute: Int,
     val daysOfWeek: List<Int>,
-    var isOn: Boolean
+    val isOn: Boolean,
+    val isSleep: Boolean = true,
 )
