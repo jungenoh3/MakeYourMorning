@@ -66,11 +66,11 @@ class AndroidAlarmScheduler (private val context: Context) {
         }
     }
 
-    fun cancel(item: AlarmTime){
+    fun cancel(id: String){
         alarmManager.cancel(
             PendingIntent.getBroadcast(
                 context,
-                item.id.hashCode(),
+                id.hashCode(),
                 Intent(context, AlarmReceiver::class.java),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )

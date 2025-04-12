@@ -31,13 +31,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.Navigator
 import com.yesnoheun3.makeyourmorning.common.PRIMARY_COLOR
 import com.yesnoheun3.makeyourmorning.common.alarmManage.AndroidAlarmScheduler
-import java.time.LocalDateTime
-import java.util.Calendar
 
 @Composable
-fun TimeScreen(onClick: () -> Unit, viewModel: AlarmTimeViewModel) {
+fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
     val context = LocalContext.current
     val scheduler = AndroidAlarmScheduler(context)
 
@@ -58,7 +58,7 @@ fun TimeScreen(onClick: () -> Unit, viewModel: AlarmTimeViewModel) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onClick
+                onClick = { navController.navigate("addTime") }
             ) {
                 Icon(Icons.Rounded.Add, "Add alarm")
             }
@@ -84,7 +84,7 @@ fun TimeScreen(onClick: () -> Unit, viewModel: AlarmTimeViewModel) {
                     count = instanceItem.size,
                     key = { instanceItem[it].id } // 설정해야함
                     ) { index ->
-                    SwipeToDeleteContainer(
+                    SwipeToDeleteContainer<AlarmTime>(
                         item = instanceItem[index],
                         onDelete = {
                             viewModel.deleteItem(instanceItem[index])
@@ -97,9 +97,13 @@ fun TimeScreen(onClick: () -> Unit, viewModel: AlarmTimeViewModel) {
                             if (isChecked) {
                                 scheduler.schedule(instanceItem[index])
                             } else {
-                                scheduler.cancel(instanceItem[index])
+                                scheduler.cancel(instanceItem[index].id)
                             }
-                        })
+                        },
+                       onClick = {
+                           navController.navigate("addTime?index=${index}")
+                            }
+                        )
                     }
                     Divider(
                         color = Color.LightGray,

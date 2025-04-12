@@ -38,7 +38,7 @@ import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel){
+fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel, index: String?){
     val context = LocalContext.current
     val scheduler = AndroidAlarmScheduler(context)
 
@@ -50,13 +50,19 @@ fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel){
 
     val currentTime = Calendar.getInstance()
 
+    val intIndex = index?.toInt() ?: -1
+
     val timePickerState = rememberTimePickerState(
-        initialHour = currentTime.get(Calendar.HOUR_OF_DAY),
-        initialMinute = currentTime.get(Calendar.MINUTE),
+        initialHour = if(index != null) { viewModel.items[intIndex].hour }
+                        else { currentTime.get(Calendar.HOUR_OF_DAY) },
+        initialMinute = if(index != null) { viewModel.items[intIndex].minute }
+                        else { currentTime.get(Calendar.MINUTE) },
         is24Hour = false,
     )
 
-    val selectedDays = remember { mutableStateListOf<Int>() }
+    val selectedDays = remember { if(index != null) {
+        mutableStateListOf<Int>().apply { (viewModel.items[intIndex].daysOfWeek) }
+    } else { mutableStateListOf<Int>() } }
 
     Column (
         modifier = Modifier.fillMaxHeight().padding(10.dp),
@@ -106,17 +112,27 @@ fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel){
         TimePicker(state = timePickerState)
 
         TextButton(onClick = {
-            // 처음에 실행할 때 추가
-            viewModel.addItem(
-                hour = timePickerState.hour,
-                minute = timePickerState.minute,
-                daysOfWeek = selectedDays)
-
-            scheduler.schedule(viewModel.last)
-
+            if (index != null){  // 수정할 때는 isOn에 따라서!
+                viewModel.updateTime(
+                    index = intIndex,
+                    hour = timePickerState.hour,
+                    minute = timePickerState.minute,
+                    daysOfWeek = selectedDays
+                )
+                if (viewModel.items[intIndex].isOn){
+                    scheduler.cancel(viewModel.items[intIndex].id)
+                    scheduler.schedule(viewModel.items[intIndex])
+                }
+            } else { // 추가할 때는 스케쥴/
+                viewModel.addItem(
+                    hour = timePickerState.hour,
+                    minute = timePickerState.minute,
+                    daysOfWeek = selectedDays)
+                scheduler.schedule(viewModel.last)
+            }
             popBack()
         }) {
-            Text("시간 추가")
+            Text(text = if (index != null) { "시간 수정" } else { "시간 추가 "})
         }
     }
 }

@@ -29,10 +29,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.yesnoheun3.makeyourmorning.pages.time.TimeScreen
 import com.yesnoheun3.makeyourmorning.pages.TaskRecord
 import com.yesnoheun3.makeyourmorning.pages.User
@@ -55,7 +57,7 @@ fun NavigationGraph(navController: NavHostController){
 
     NavHost(navController = navController, startDestination = BottomNavItem.TimeSetting.screenRoute) {
         composable(route =  BottomNavItem.TimeSetting.screenRoute) {
-            TimeScreen(onClick = { navController.navigate("addTime") }, viewModel = viewModel)
+            TimeScreen(navController = navController, viewModel = viewModel)
         }
         composable(route = BottomNavItem.TaskRecord.screenRoute) {
             TaskRecord()
@@ -63,8 +65,15 @@ fun NavigationGraph(navController: NavHostController){
         composable(route = BottomNavItem.User.screenRoute) {
             User()
         }
-        composable(route = "addTime") {
-            AddTimeScreen(popBack = { navController.popBackStack() }, viewModel = viewModel)
+        composable(route = "addTime?index={index}",
+            arguments = listOf(navArgument("index") {
+                type = NavType.StringType
+                nullable = true
+                defaultValue = null
+                }
+            )
+        ) { backStackEntry -> val index = backStackEntry.arguments?.getString("index")
+            AddTimeScreen(popBack = { navController.popBackStack() }, viewModel = viewModel, index = index)
         }
     }
 }
