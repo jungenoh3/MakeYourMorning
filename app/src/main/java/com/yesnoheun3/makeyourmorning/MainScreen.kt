@@ -40,6 +40,9 @@ import com.yesnoheun3.makeyourmorning.pages.TaskRecord
 import com.yesnoheun3.makeyourmorning.pages.User
 import com.yesnoheun3.makeyourmorning.pages.time.AddTimeScreen
 import com.yesnoheun3.makeyourmorning.pages.time.AlarmTimeViewModel
+import com.yesnoheun3.makeyourmorning.ui.theme.Yellow100
+import com.yesnoheun3.makeyourmorning.ui.theme.Yellow40
+import com.yesnoheun3.makeyourmorning.ui.theme.Yellow60
 
 sealed class BottomNavItem(
     val title: String,
@@ -107,19 +110,11 @@ fun MainScreen() {
                 modifier = Modifier
                     .height(70.dp),
                 backgroundColor = Color.White,
-                contentColor = Color.DarkGray
             ) {
                 items.forEach { item ->
                     BottomNavigationItem(
                         modifier = Modifier
                             .align(alignment = Alignment.CenterVertically),
-                        label = @Composable {
-                            Text(
-                                text = item.title,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
-                            )
-                        },
                         selected = currentRoute == item.screenRoute,
                         onClick = {
                             navController.navigate(item.screenRoute)  {
@@ -134,10 +129,20 @@ fun MainScreen() {
                         },
                         icon = {
                             Icon(
-                                item.icon,
-                                "Navigation button",
-                                modifier = Modifier.padding(6.dp))
-                        }
+                                imageVector = item.icon,
+                                contentDescription = "Navigation button",
+                                modifier = Modifier.padding(6.dp)
+                            )
+                        },
+                        label = {
+                            Text(
+                                text = item.title,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp
+                            )
+                        },
+                        selectedContentColor = Yellow40,
+                        unselectedContentColor = Color.DarkGray
                     )
                 }
             }

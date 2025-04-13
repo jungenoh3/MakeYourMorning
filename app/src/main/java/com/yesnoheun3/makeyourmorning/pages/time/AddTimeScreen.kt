@@ -1,6 +1,7 @@
 package com.yesnoheun3.makeyourmorning.pages.time
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,11 +16,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerColors
+import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
@@ -30,10 +34,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.yesnoheun3.makeyourmorning.common.PRIMARY_COLOR
 import com.yesnoheun3.makeyourmorning.common.alarmManage.AndroidAlarmScheduler
+import com.yesnoheun3.makeyourmorning.ui.theme.Yellow10
+import com.yesnoheun3.makeyourmorning.ui.theme.Yellow100
+import com.yesnoheun3.makeyourmorning.ui.theme.Yellow40
+import com.yesnoheun3.makeyourmorning.ui.theme.Yellow60
+import com.yesnoheun3.makeyourmorning.ui.theme.Yellow80
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,7 +74,7 @@ fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel, id: String
     } else { mutableStateListOf<Int>() } }
 
     Column (
-        modifier = Modifier.fillMaxHeight().padding(10.dp),
+        modifier = Modifier.fillMaxHeight().padding(10.dp).background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
@@ -90,12 +99,12 @@ fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel, id: String
                     shape = CircleShape,
                     contentPadding = PaddingValues(0.dp),
                     colors = ButtonColors(
-                        containerColor = Color(PRIMARY_COLOR),
-                        contentColor = Color.Black,
+                        containerColor = if (isSelected) Yellow60 else Yellow80,
+                        contentColor = if (isSelected) Color.Black else Color.Gray,
                         disabledContainerColor = Color.DarkGray,
                         disabledContentColor = Color.White
                     ),
-                    border = BorderStroke(1.dp, if (isSelected) Color(0xFFFFC107) else Color.Gray)
+                    border = BorderStroke(1.dp, color = Yellow40)
                 ) {
                     Text(
                         text = day,
@@ -109,30 +118,55 @@ fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel, id: String
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        TimePicker(state = timePickerState)
+        TimePicker(
+            state = timePickerState,
+            colors = TimePickerColors(
+                clockDialColor = Yellow100,
+                selectorColor = Yellow60,
+                containerColor = Color.White,
+                periodSelectorBorderColor = Color.Transparent,
+                clockDialSelectedContentColor = Yellow10,
+                clockDialUnselectedContentColor = Color.Gray,
+                periodSelectorSelectedContainerColor = Yellow60,
+                periodSelectorUnselectedContainerColor = Yellow100,
+                periodSelectorSelectedContentColor = Yellow10,
+                periodSelectorUnselectedContentColor = Color.Gray,
+                timeSelectorSelectedContainerColor = Yellow60,
+                timeSelectorUnselectedContainerColor = Yellow100,
+                timeSelectorSelectedContentColor = Yellow10,
+                timeSelectorUnselectedContentColor = Color.Gray
+            )
+        )
 
-        TextButton(onClick = {
-            if (id != null ){  // 수정할 때는 isOn에 따라서!
-                viewModel.updateTime(
-                    id = id,
-                    hour = timePickerState.hour,
-                    minute = timePickerState.minute,
-                    daysOfWeek = selectedDays,
-                )
-                if (viewModel.items[index].isOn){
-                    scheduler.cancel(viewModel.items[index].id)
-                    scheduler.schedule(viewModel.items[index])
+        TextButton(
+            onClick = {
+                if (id != null ){  // 수정할 때는 isOn에 따라서!
+                    viewModel.updateTime(
+                        id = id,
+                        hour = timePickerState.hour,
+                        minute = timePickerState.minute,
+                        daysOfWeek = selectedDays,
+                    )
+                    if (viewModel.items[index].isOn){
+                        // scheduler.cancel(viewModel.items[index].id)
+                        // scheduler.schedule(viewModel.items[index])
+                    }
+                } else { // 추가할 때는 스케쥴/
+                    viewModel.addItem(
+                        hour = timePickerState.hour,
+                        minute = timePickerState.minute,
+                        daysOfWeek = selectedDays,
+                        isSleep = isSleep)
+                    // scheduler.schedule(viewModel.last)
                 }
-            } else { // 추가할 때는 스케쥴/
-                viewModel.addItem(
-                    hour = timePickerState.hour,
-                    minute = timePickerState.minute,
-                    daysOfWeek = selectedDays,
-                    isSleep = isSleep)
-                scheduler.schedule(viewModel.last)
-            }
-            popBack()
-        }) {
+                popBack()
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Yellow60,
+                contentColor = Yellow10
+            ),
+            shape = CircleShape
+        ) {
             Text(text = if (id != null) { "시간 수정" } else { "시간 추가 "})
         }
     }

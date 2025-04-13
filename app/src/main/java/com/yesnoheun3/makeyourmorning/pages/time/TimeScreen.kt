@@ -3,11 +3,13 @@
 package com.yesnoheun3.makeyourmorning.pages.time
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -41,8 +43,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.yesnoheun3.makeyourmorning.common.PRIMARY_COLOR
 import com.yesnoheun3.makeyourmorning.common.alarmManage.AndroidAlarmScheduler
+import com.yesnoheun3.makeyourmorning.ui.theme.Yellow40
+import com.yesnoheun3.makeyourmorning.ui.theme.Yellow60
+import com.yesnoheun3.makeyourmorning.ui.theme.Yellow80
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -60,18 +64,20 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
 
     Scaffold (
         modifier = Modifier.fillMaxSize(),
+        containerColor = Color.White,
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("취침 시간") },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(PRIMARY_COLOR),
+                    containerColor = Yellow80,
                     titleContentColor = Color.Black
                 )
             )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate("addTime?isSleep=${isSleep.value}") }
+                onClick = { navController.navigate("addTime?isSleep=${isSleep.value}") },
+                backgroundColor = Yellow60
             ) {
                 Icon(Icons.Rounded.Add, "Add alarm")
             }
@@ -84,12 +90,16 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(PRIMARY_COLOR))
+                    .background(Yellow80)
                     .padding(50.dp),
                 contentAlignment = Alignment.Center,
             ){
                 Text("현재 시간", fontSize = 50.sp)
             }
+            Divider(modifier = Modifier.fillMaxWidth(),
+                thickness = 1.dp,
+                color = Yellow40
+                )
             Row (
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -109,7 +119,7 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
                                         isSleep.value = false
                                     }
                             }
-                            .background(if (pageState.targetPage == index) {Color(PRIMARY_COLOR)} else {Color.White} ),
+                            .background(if (pageState.targetPage == index) {Yellow80} else {Color.White} ),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -122,6 +132,10 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
                 }
 
             }
+            Divider(modifier = Modifier.fillMaxWidth(),
+                thickness = 1.dp,
+                color = Yellow40
+            )
             HorizontalPager(
                 state = pageState
             ) {
@@ -137,19 +151,19 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
                             item = instanceItem[index],
                             onDelete = {
                                 viewModel.deleteItem(instanceItem[index])
-                            }
+                            },
+                            onClick = { navController.navigate("addTime?id=${instanceItem[index].id}") }
                         ) {
                             TimeCard(
                                 instanceItem[index],
                                 onCheckedChanged = { isChecked ->
                                     viewModel.updateIsOn(instanceItem[index].id, isChecked)
                                     if (isChecked) {
-                                        scheduler.schedule(instanceItem[index])
+                                        // scheduler.schedule(instanceItem[index])
                                     } else {
-                                        scheduler.cancel(instanceItem[index].id)
+                                        // scheduler.cancel(instanceItem[index].id)
                                     }
                                 },
-                                onClick = { navController.navigate("addTime?id=${instanceItem[index].id}") }
                             )
                         }
                         Divider(

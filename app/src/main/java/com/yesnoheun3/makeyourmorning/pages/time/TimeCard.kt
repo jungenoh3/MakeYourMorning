@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 //noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.Checkbox
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.DismissDirection
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.DismissState
@@ -26,6 +24,10 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.SwipeToDismiss
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.Switch
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.SwitchDefaults
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -43,6 +45,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.yesnoheun3.makeyourmorning.ui.theme.Yellow40
+import com.yesnoheun3.makeyourmorning.ui.theme.Yellow60
 import kotlinx.coroutines.delay
 import java.util.Locale
 
@@ -69,6 +73,7 @@ fun <T> SwipeToDeleteContainer(
     item: T,
     onDelete: (T) -> Unit,
     animateDuration: Int = 500,
+    onClick: () -> Unit,
     content: @Composable (T) -> Unit
 ){
     var isRemoved by remember {
@@ -101,7 +106,7 @@ fun <T> SwipeToDeleteContainer(
     ) {
         SwipeToDismiss(
             state = state,
-            background = { DeleteBackground(swipeDismissState = state) },
+            background = { DeleteBackground(swipeDismissState = state, onClick = onClick) },
             dismissContent = { content(item) },
             directions = setOf(DismissDirection.EndToStart)
         )
@@ -110,7 +115,7 @@ fun <T> SwipeToDeleteContainer(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DeleteBackground( swipeDismissState: DismissState) {
+fun DeleteBackground( swipeDismissState: DismissState, onClick: () -> Unit) {
     val color = when (swipeDismissState.dismissDirection) {
         DismissDirection.EndToStart -> Color.Red
         DismissDirection.StartToEnd -> Color.Transparent
@@ -120,6 +125,10 @@ fun DeleteBackground( swipeDismissState: DismissState) {
     Box (
         modifier = Modifier
             .fillMaxSize()
+            .clickable(
+                enabled = true,
+                onClick = onClick
+            )
             .background(color)
             .padding(16.dp),
         contentAlignment = Alignment.CenterEnd
@@ -134,34 +143,39 @@ fun DeleteBackground( swipeDismissState: DismissState) {
 }
 
 @Composable
-fun TimeCard(data: AlarmTime, onCheckedChanged: (Boolean) -> Unit, onClick: () -> Unit){
-    Row (
+fun TimeCard(data: AlarmTime, onCheckedChanged: (Boolean) -> Unit) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 15.dp, horizontal = 20.dp)
-            .clickable(
-                enabled = true,
-                onClick = onClick
-            ),
+            .padding(vertical = 15.dp, horizontal = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column (
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(String.format(Locale.KOREA, "%02d : %02d",
-                data.hour,
-                data.minute
-            ),
+            Text(
+                String.format(
+                    Locale.KOREA, "%02d : %02d",
+                    data.hour,
+                    data.minute
+                ),
                 fontSize = 20.sp
-                )
-            Text(stringDaysOfWeek(data.daysOfWeek),
+            )
+            Text(
+                stringDaysOfWeek(data.daysOfWeek),
                 fontSize = 15.sp
-                )
+            )
         }
-        Checkbox(
+        Switch(
             checked = data.isOn,
-            onCheckedChange = onCheckedChanged
+            onCheckedChange = onCheckedChanged,
+            colors = SwitchDefaults.colors(
+                checkedTrackColor = Yellow60,
+                checkedThumbColor = Yellow40,
+                uncheckedThumbColor = Color.DarkGray,
+                uncheckedTrackColor = Color.Gray
+            )
         )
     }
 }

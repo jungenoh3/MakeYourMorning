@@ -2,7 +2,6 @@ package com.yesnoheun3.makeyourmorning.pages.time
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import kotlin.math.min
 
 class AlarmTimeViewModel : ViewModel() {
     private  val _items = mutableStateListOf<AlarmTime>()
@@ -15,15 +14,6 @@ class AlarmTimeViewModel : ViewModel() {
                 hour = 19,
                 minute = 0,
                 isSleep = true,
-                daysOfWeek = listOf(1, 2),
-                isOn = true
-            )
-        )
-        _items.add(
-            AlarmTime(
-                hour = 10,
-                minute = 2,
-                isSleep = false,
                 daysOfWeek = listOf(1, 2),
                 isOn = true
             )
