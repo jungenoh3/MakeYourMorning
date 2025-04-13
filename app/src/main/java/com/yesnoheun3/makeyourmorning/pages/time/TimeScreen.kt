@@ -60,7 +60,7 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
     val typeList = listOf<String>("취침 시간", "기상 시간")
     val pageState = rememberPagerState(initialPage = 0, pageCount = { typeList.size })
     val coroutineScope = rememberCoroutineScope()
-    val isSleep = remember { mutableStateOf(true) } // true면 sleep
+    val isSleep = pageState.currentPage == 0
 
     Scaffold (
         modifier = Modifier.fillMaxSize(),
@@ -76,7 +76,7 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate("addTime?isSleep=${isSleep.value}") },
+                onClick = { navController.navigate("addTime?isSleep=${isSleep}") },
                 backgroundColor = Yellow60
             ) {
                 Icon(Icons.Rounded.Add, "Add alarm")
@@ -113,11 +113,12 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
                                     coroutineScope.launch {
                                         pageState.animateScrollToPage(index)
                                     }
-                                    if (index == 0) {
-                                        isSleep.value = true
-                                    } else {
-                                        isSleep.value = false
-                                    }
+//                                    if (index == 0) {
+//                                        isSleep.value = true
+//                                    } else {
+//                                        isSleep.value = false
+//                                    }
+//                                    val instanceItem = viewModel.items.filter { it.isSleep == isSleep.value }
                             }
                             .background(if (pageState.targetPage == index) {Yellow80} else {Color.White} ),
                         contentAlignment = Alignment.Center
@@ -138,11 +139,14 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
             )
             HorizontalPager(
                 state = pageState
-            ) {
+            ) { page ->
+                val instanceItem = viewModel.items.filter { it.isSleep == (page == 0) }
+
                 LazyColumn(
                     state = scrollState,
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Top
                 ) {
-                    val instanceItem = viewModel.items.filter { it.isSleep == isSleep.value }
                     items(
                         count = instanceItem.size,
                         key = { instanceItem[it].id } // 설정해야함
