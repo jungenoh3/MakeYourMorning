@@ -1,4 +1,4 @@
-package com.yesnoheun3.makeyourmorning.pages.time
+package com.yesnoheun3.makeyourmorning.pages.time.data
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
@@ -35,13 +35,15 @@ class AlarmTimeViewModel : ViewModel() {
     }
 
     fun addItem(hour: Int, minute: Int, daysOfWeek: List<Int>, isSleep: Boolean){
-        _items.add(AlarmTime(
-            hour = hour,
-            minute = minute,
-            daysOfWeek = daysOfWeek.sorted(),
-            isOn = true,
-            isSleep = isSleep
-        ))
+        _items.add(
+            AlarmTime(
+                hour = hour,
+                minute = minute,
+                daysOfWeek = daysOfWeek.sorted(),
+                isOn = true,
+                isSleep = isSleep
+            )
+        )
     }
 
     fun deleteItem(item: AlarmTime){

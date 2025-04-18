@@ -16,8 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.yesnoheun3.makeyourmorning.common.alarmManage.AlarmService
-import com.yesnoheun3.makeyourmorning.utilities.OverlayService
-
+import com.yesnoheun3.makeyourmorning.pages.main.NavigationGraph
 
 class SleepActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,23 +27,8 @@ class SleepActivity: ComponentActivity() {
         stopService(stopAlarmService)
 
         setContent {
-            Sleep()
+            NavigationGraph("sleeping")
         }
-    }
-}
-
-@Composable
-fun Sleep(modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color(0xFFFFFFFF)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Sleep Time!")
-
     }
 }
 

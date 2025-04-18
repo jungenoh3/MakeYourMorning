@@ -4,7 +4,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.Manifest
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.activity.ComponentActivity
@@ -20,7 +19,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.yesnoheun3.makeyourmorning.common.alarmManage.AlarmService
 import com.yesnoheun3.makeyourmorning.ui.theme.MakeYourMorningTheme
-import androidx.core.net.toUri
+import com.yesnoheun3.makeyourmorning.pages.main.MainScreen
+import com.yesnoheun3.makeyourmorning.pages.main.NavigationGraph
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,20 +62,20 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                if (!hasOverlayPermission) {
-                    LaunchedEffect(Unit) {
-                        val intent = Intent(
-                            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                            "package:${context.packageName}".toUri()
-                        )
-                        context.startActivity(intent)
-                    }
-                }
+//                if (!hasOverlayPermission) {
+//                    LaunchedEffect(Unit) {
+//                        val intent = Intent(
+//                            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+//                            "package:${context.packageName}".toUri()
+//                        )
+//                        context.startActivity(intent)
+//                    }
+//                }
 
                 System.out.println("notification permission Granted: $hasNotificationPermission")
-                System.out.println("overlay permission Granted: $hasNotificationPermission")
+//                System.out.println("overlay permission Granted: $hasNotificationPermission")
 
-                MainScreen()
+                NavigationGraph("main")
             }
         }
     }

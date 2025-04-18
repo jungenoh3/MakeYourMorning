@@ -12,7 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.yesnoheun3.makeyourmorning.R
 import com.yesnoheun3.makeyourmorning.pages.sleep.SleepActivity
-import com.yesnoheun3.makeyourmorning.pages.time.AlarmTime
+import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTime
 import com.yesnoheun3.makeyourmorning.utilities.MainLifeCycleCallback
 import java.util.UUID
 

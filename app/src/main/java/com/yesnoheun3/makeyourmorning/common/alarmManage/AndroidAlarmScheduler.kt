@@ -6,11 +6,15 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import com.yesnoheun3.makeyourmorning.pages.time.AlarmTime
+import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTime
 import java.util.Calendar
 
 class AndroidAlarmScheduler (private val context: Context) {
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
+
+    fun getLatestTime(): AlarmManager.AlarmClockInfo? {
+        return alarmManager.nextAlarmClock
+    }
 
     @SuppressLint("ScheduleExactAlarm")
     fun schedule(item: AlarmTime){

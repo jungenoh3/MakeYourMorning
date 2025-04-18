@@ -1,4 +1,4 @@
-package com.yesnoheun3.makeyourmorning.pages.time
+package com.yesnoheun3.makeyourmorning.pages.time.data
 
 import java.util.UUID
 
