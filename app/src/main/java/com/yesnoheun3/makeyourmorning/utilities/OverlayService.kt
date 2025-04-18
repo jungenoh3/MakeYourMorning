@@ -14,7 +14,6 @@ import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.yesnoheun3.makeyourmorning.R
-import com.yesnoheun3.makeyourmorning.pages.sleep.OverlayCompose
 
 class OverlayService: LifecycleService(), SavedStateRegistryOwner {
     companion object {
@@ -42,6 +41,7 @@ class OverlayService: LifecycleService(), SavedStateRegistryOwner {
             .build()
         startForeground(2, notification)
 
+
         savedStateRegistryController.performAttach()
         savedStateRegistryController.performRestore(null)
 
@@ -50,9 +50,7 @@ class OverlayService: LifecycleService(), SavedStateRegistryOwner {
             setViewTreeSavedStateRegistryOwner(this@OverlayService)
             setViewTreeLifecycleOwner(this@OverlayService)
             setContent {
-                OverlayCompose {
-                    stopSelf()
-                }
+
             }
         }
 

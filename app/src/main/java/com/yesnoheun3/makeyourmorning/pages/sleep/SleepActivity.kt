@@ -2,6 +2,7 @@ package com.yesnoheun3.makeyourmorning.pages.sleep
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -22,32 +23,28 @@ class SleepActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        System.out.println("Sleep Activity 실행")
-        val stopAlarmService = Intent(this, AlarmService::class.java)
-        stopService(stopAlarmService)
-
         setContent {
             NavigationGraph("sleeping")
         }
     }
 }
 
-@Composable
-fun OverlayCompose(modifier: Modifier = Modifier, onDismiss: () -> Unit) {
-    val context = LocalContext.current
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color(0xFFFFFFFF)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Overlay")
-
-        Button(onClick = {
-            onDismiss()
-        }) {
-            Text("이거 끄기")
-        }
-    }
-}
+//@Composable
+//fun OverlayCompose(modifier: Modifier = Modifier, onDismiss: () -> Unit) {
+//    val context = LocalContext.current
+//    Column(
+//        modifier = modifier
+//            .fillMaxSize()
+//            .background(Color(0xFFFFFFFF)),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        Text(text = "Overlay")
+//
+//        Button(onClick = {
+//            onDismiss()
+//        }) {
+//            Text("이거 끄기")
+//        }
+//    }
+//}
