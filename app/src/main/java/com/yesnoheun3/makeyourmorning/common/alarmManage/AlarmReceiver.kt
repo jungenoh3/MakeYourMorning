@@ -11,10 +11,9 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.yesnoheun3.makeyourmorning.R
-import com.yesnoheun3.makeyourmorning.pages.sleep.SleepActivity
+import com.yesnoheun3.makeyourmorning.pages.sleep.GoToSleepActivity
 import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTime
 import com.yesnoheun3.makeyourmorning.utilities.MainLifeCycleCallback
-import java.util.UUID
 
 class AlarmReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -24,7 +23,7 @@ class AlarmReceiver: BroadcastReceiver() {
         }
 
         if (MainLifeCycleCallback.getInstance().isForeground){
-            val activityIntent = Intent(context, SleepActivity::class.java)
+            val activityIntent = Intent(context, GoToSleepActivity::class.java)
             activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(activityIntent)
         } else {
@@ -61,7 +60,7 @@ class AlarmReceiver: BroadcastReceiver() {
     }
 
     fun fireNotification(context: Context){
-        val activityIntent = Intent(context, SleepActivity::class.java).apply {
+        val activityIntent = Intent(context, GoToSleepActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
 

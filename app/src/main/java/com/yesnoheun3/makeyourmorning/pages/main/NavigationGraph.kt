@@ -12,7 +12,7 @@ import com.yesnoheun3.makeyourmorning.pages.time.AddTimeScreen
 import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTimeViewModel
 
 @Composable
-fun NavigationGraph(startDestination: String){
+fun NavigationGraph(startDestination: String = "main"){
     val viewModel: AlarmTimeViewModel = viewModel()
     val navController = rememberNavController()
 
@@ -20,9 +20,9 @@ fun NavigationGraph(startDestination: String){
         composable(route =  "main") {
             MainScreen(rootNavController = navController, viewModel = viewModel)
         }
-        composable(route = "sleeping") {
-            Sleeping()
-        }
+//        composable(route = "sleeping") {
+//            Sleeping(onDismiss = { navController.popBackStack() })
+//        }
         composable(route = "addTime?id={id}&isSleep={isSleep}",
             arguments = listOf(navArgument("id") {
                 type = NavType.StringType

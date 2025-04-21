@@ -165,9 +165,9 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
                                 onCheckedChanged = { isChecked ->
                                     viewModel.updateIsOn(instanceItem[index].id, isChecked)
                                     if (isChecked) {
-                                        // scheduler.schedule(instanceItem[index])
+                                        scheduler.schedule(instanceItem[index])
                                     } else {
-                                        // scheduler.cancel(instanceItem[index].id)
+                                        scheduler.cancel(instanceItem[index].id)
                                     }
                                 },
                             )

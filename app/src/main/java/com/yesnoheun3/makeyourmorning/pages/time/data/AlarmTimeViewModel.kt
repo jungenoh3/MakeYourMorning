@@ -14,7 +14,7 @@ class AlarmTimeViewModel : ViewModel() {
                 hour = 19,
                 minute = 0,
                 isSleep = true,
-                daysOfWeek = listOf(1, 2),
+                daysOfWeek = listOf(),
                 isOn = true
             )
         )

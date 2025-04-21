@@ -121,7 +121,7 @@ fun CustomNavGraph(innerPadding: PaddingValues, navController: NavHostController
                 TimeScreen(navController = rootNavController, viewModel = viewModel)
             }
             composable(BottomNavItem.GoToSleep.screenRoute) {
-                GoToSleep(navController = rootNavController)
+                GoToSleep()
             }
             composable(BottomNavItem.User.screenRoute) {
                 User()

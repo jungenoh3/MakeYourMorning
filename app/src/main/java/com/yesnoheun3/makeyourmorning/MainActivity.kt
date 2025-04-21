@@ -27,9 +27,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val stopService = Intent(this, AlarmService::class.java)
-        stopService(stopService)
-
         setContent {
             MakeYourMorningTheme {
                 val context = LocalContext.current
@@ -63,18 +60,18 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                if (!hasOverlayPermission) {
-                    LaunchedEffect(Unit) {
-                        val intent = Intent(
-                            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                            "package:${context.packageName}".toUri()
-                        )
-                        context.startActivity(intent)
-                    }
-                }
+//                if (!hasOverlayPermission) {
+//                    LaunchedEffect(Unit) {
+//                        val intent = Intent(
+//                            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+//                            "package:${context.packageName}".toUri()
+//                        )
+//                        context.startActivity(intent)
+//                    }
+//                }
 
                 System.out.println("notification permission Granted: $hasNotificationPermission")
-                System.out.println("overlay permission Granted: $hasNotificationPermission")
+//                System.out.println("overlay permission Granted: $hasNotificationPermission")
 
                 NavigationGraph("main")
             }

@@ -23,23 +23,31 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.MakeYourMorning">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name=".pages.sleep.SleepActivity"
+            android:name=".pages.sleep.SleepingActivity"
+            android:exported="false"
+            android:showOnLockScreen="false"
+            android:turnScreenOn="true"
+            android:parentActivityName=".MainActivity"
+            android:label="Sleeping">
+        </activity>
+
+        <activity
+            android:name=".pages.sleep.GoToSleepActivity"
             android:exported="false"
             android:showOnLockScreen="true"
             android:turnScreenOn="true"
             android:parentActivityName=".MainActivity"
             android:label="GoToSleep">
         </activity>
+
 
         <receiver android:name=".common.alarmManage.AlarmReceiver" />
         <service

@@ -1,21 +1,18 @@
 package com.yesnoheun3.makeyourmorning.common.alarmManage
 
-import android.Manifest
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
-import androidx.core.content.ContextCompat
 import com.yesnoheun3.makeyourmorning.utilities.MainLifeCycleCallback
 import com.yesnoheun3.makeyourmorning.R
-import com.yesnoheun3.makeyourmorning.pages.sleep.SleepActivity
+import com.yesnoheun3.makeyourmorning.pages.sleep.SleepingActivity
 
 class AlarmService: Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -39,7 +36,7 @@ class AlarmService: Service() {
 //            return START_NOT_STICKY
 //        }
 
-        val sleepIntent = Intent(this, SleepActivity::class.java)
+        val sleepIntent = Intent(this, SleepingActivity::class.java)
         val sleepPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
             addNextIntentWithParentStack(sleepIntent)
             getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
