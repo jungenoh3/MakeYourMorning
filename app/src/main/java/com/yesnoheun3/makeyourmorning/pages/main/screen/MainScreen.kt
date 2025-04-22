@@ -1,9 +1,8 @@
-package com.yesnoheun3.makeyourmorning.pages.main
+package com.yesnoheun3.makeyourmorning.pages.main.screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,10 +12,6 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Create
-import androidx.compose.material.icons.rounded.Notifications
-import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,24 +19,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.yesnoheun3.makeyourmorning.pages.time.TimeScreen
-import com.yesnoheun3.makeyourmorning.pages.User
+import com.yesnoheun3.makeyourmorning.pages.main.compose.InnerNavGraph
+import com.yesnoheun3.makeyourmorning.pages.time.screen.TimeScreen
+import com.yesnoheun3.makeyourmorning.pages.user.User
 import com.yesnoheun3.makeyourmorning.pages.main.data.BottomNavItem
-import com.yesnoheun3.makeyourmorning.pages.sleep.GoToSleep
-import com.yesnoheun3.makeyourmorning.pages.sleep.Sleeping
-import com.yesnoheun3.makeyourmorning.pages.time.AddTimeScreen
+import com.yesnoheun3.makeyourmorning.pages.sleep.screen.SleepManagerScreen
 import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTimeViewModel
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow40
 
@@ -105,27 +95,7 @@ fun MainScreen(rootNavController: NavHostController, viewModel: AlarmTimeViewMod
             }
         }
     ) {innerPadding ->
-        CustomNavGraph(innerPadding, navController, rootNavController, viewModel)
+        InnerNavGraph(innerPadding, navController, rootNavController, viewModel)
     }
 }
 
-@Composable
-fun CustomNavGraph(innerPadding: PaddingValues, navController: NavHostController,
-                   rootNavController: NavHostController, viewModel: AlarmTimeViewModel) {
-    Box(modifier = Modifier.padding(innerPadding)){
-        NavHost(
-            navController = navController,
-            startDestination = BottomNavItem.TimeSetting.screenRoute,
-        ) {
-            composable(BottomNavItem.TimeSetting.screenRoute) {
-                TimeScreen(navController = rootNavController, viewModel = viewModel)
-            }
-            composable(BottomNavItem.GoToSleep.screenRoute) {
-                GoToSleep()
-            }
-            composable(BottomNavItem.User.screenRoute) {
-                User()
-            }
-        }
-    }
-}

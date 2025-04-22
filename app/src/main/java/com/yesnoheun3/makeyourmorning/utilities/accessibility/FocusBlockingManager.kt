@@ -1,4 +1,4 @@
-package com.yesnoheun3.makeyourmorning.utilities
+package com.yesnoheun3.makeyourmorning.utilities.accessibility
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

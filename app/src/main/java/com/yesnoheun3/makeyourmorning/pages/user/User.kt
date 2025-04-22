@@ -1,4 +1,4 @@
-package com.yesnoheun3.makeyourmorning.pages
+package com.yesnoheun3.makeyourmorning.pages.user
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

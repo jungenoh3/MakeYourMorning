@@ -1,15 +1,13 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.yesnoheun3.makeyourmorning.pages.time
+package com.yesnoheun3.makeyourmorning.pages.time.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -32,8 +30,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,20 +39,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.yesnoheun3.makeyourmorning.common.alarmManage.AndroidAlarmScheduler
+import com.yesnoheun3.makeyourmorning.common.compose.CustomColumn
+import com.yesnoheun3.makeyourmorning.pages.time.compose.SwipeToDeleteContainer
+import com.yesnoheun3.makeyourmorning.pages.time.compose.TimeCard
+import com.yesnoheun3.makeyourmorning.utilities.alarm.AlarmScheduler
 import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTime
 import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTimeViewModel
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow40
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow60
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow80
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
 fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
     val context = LocalContext.current
-    val scheduler = AndroidAlarmScheduler(context)
+    val scheduler = AlarmScheduler(context)
 
     val scrollState = rememberLazyListState()
     val typeList = listOf<String>("취침 시간", "기상 시간")
@@ -86,9 +83,7 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
         },
         floatingActionButtonPosition = FabPosition.Center
     ) { innerPadding ->
-        Column (
-            modifier = Modifier.padding(innerPadding),
-        ) {
+        CustomColumn (paddingValues = innerPadding) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -115,12 +110,6 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
                                     coroutineScope.launch {
                                         pageState.animateScrollToPage(index)
                                     }
-//                                    if (index == 0) {
-//                                        isSleep.value = true
-//                                    } else {
-//                                        isSleep.value = false
-//                                    }
-//                                    val instanceItem = viewModel.items.filter { it.isSleep == isSleep.value }
                             }
                             .background(if (pageState.targetPage == index) {Yellow80} else {Color.White} ),
                         contentAlignment = Alignment.Center

@@ -5,13 +5,13 @@ import android.app.Application
 import android.os.Bundle
 
 // https://velog.io/@jmseb3/Android-ForegroundBackground-%EA%B5%AC%EB%B6%84%ED%95%98%EA%B8%B0
-class MainLifeCycleCallback: Application.ActivityLifecycleCallbacks {
+class AppForegroundTracker: Application.ActivityLifecycleCallbacks {
     companion object {
-        private var instance: MainLifeCycleCallback? = null
+        private var instance: AppForegroundTracker? = null
 
-        fun getInstance(): MainLifeCycleCallback {
+        fun getInstance(): AppForegroundTracker {
             if (instance == null){
-                instance = MainLifeCycleCallback()
+                instance = AppForegroundTracker()
             }
             return instance!!
         }

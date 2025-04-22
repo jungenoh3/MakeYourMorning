@@ -1,12 +1,11 @@
-package com.yesnoheun3.makeyourmorning.pages.sleep
+package com.yesnoheun3.makeyourmorning.pages.sleep.compose
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,8 +16,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.yesnoheun3.makeyourmorning.utilities.FocusBlockingManager
+import com.yesnoheun3.makeyourmorning.common.compose.CustomColumn
+import com.yesnoheun3.makeyourmorning.ui.theme.PurpleGrey80
+import com.yesnoheun3.makeyourmorning.utilities.accessibility.FocusBlockingManager
 import kotlinx.coroutines.delay
 import java.time.Duration
 import java.time.Instant
@@ -26,7 +28,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 
 @Composable
-fun Sleeping(onDismiss: () -> Unit){
+fun SleepOngoing(){
     val blockingEndTime = FocusBlockingManager.blockingEndTime
     val blockingEndDateTime = remember(blockingEndTime) {
         LocalDateTime.ofInstant(
@@ -40,10 +42,11 @@ fun Sleeping(onDismiss: () -> Unit){
 
     LaunchedEffect(Unit) {
         while (true) {
-            if (currentTime == endTime){
+            if (currentTime.isAfter(endTime) || currentTime.isEqual(endTime)){
                 break
             }
             currentTime = LocalDateTime.now()
+            FocusBlockingManager.checkBlocking()
             delay(1000L)
         }
     }
@@ -52,16 +55,14 @@ fun Sleeping(onDismiss: () -> Unit){
     val minutesLeft = remainingDuration.toMinutes()
     val secondsLeft = remainingDuration.seconds % 60
 
-    Column (
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("휴대폰을 끄세요!")
+    CustomColumn (color = PurpleGrey80) {
+        Text(text = "주무세요!", fontSize = 30.sp)
+        Spacer(modifier = Modifier.height(20.dp))
         Text("남은 시간: ${minutesLeft}: ${secondsLeft}", fontSize = 20.sp)
-        Button(onClick = onDismiss) {
-            Text(text = "화면 닫기") // (Close Screen)
+        Button(onClick = {
+            FocusBlockingManager.stopBlocking()
+        }) {
+            Text(text = "취소")
         }
     }
 }

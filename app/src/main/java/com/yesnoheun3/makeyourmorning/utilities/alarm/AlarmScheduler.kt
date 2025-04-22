@@ -1,4 +1,4 @@
-package com.yesnoheun3.makeyourmorning.common.alarmManage
+package com.yesnoheun3.makeyourmorning.utilities.alarm
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
@@ -9,7 +9,7 @@ import android.os.Build
 import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTime
 import java.util.Calendar
 
-class AndroidAlarmScheduler (private val context: Context) {
+class AlarmScheduler (private val context: Context) {
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
     fun getLatestTime(): AlarmManager.AlarmClockInfo? {

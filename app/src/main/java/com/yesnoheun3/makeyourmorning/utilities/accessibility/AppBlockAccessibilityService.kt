@@ -1,10 +1,10 @@
-package com.yesnoheun3.makeyourmorning.utilities
+package com.yesnoheun3.makeyourmorning.utilities.accessibility
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
-import com.yesnoheun3.makeyourmorning.pages.sleep.SleepingActivity
+import com.yesnoheun3.makeyourmorning.pages.sleep.SleepOverlayActivity
 
 // TODO 권한이 필요하다!!!!
 class AppBlockAccessibilityService: AccessibilityService() {
@@ -53,7 +53,7 @@ class AppBlockAccessibilityService: AccessibilityService() {
     }
 
     private fun showBlockingScreen(){
-        val blockIntent = Intent(this, SleepingActivity::class.java)
+        val blockIntent = Intent(this, SleepOverlayActivity::class.java)
         blockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         blockIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(blockIntent)

@@ -1,4 +1,4 @@
-package com.yesnoheun3.makeyourmorning.utilities
+package com.yesnoheun3.makeyourmorning.utilities.accessibility
 
 import android.content.Context
 import android.content.Intent

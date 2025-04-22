@@ -1,4 +1,4 @@
-package com.yesnoheun3.makeyourmorning.pages.main
+package com.yesnoheun3.makeyourmorning.pages.main.compose
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -7,8 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.yesnoheun3.makeyourmorning.pages.sleep.Sleeping
-import com.yesnoheun3.makeyourmorning.pages.time.AddTimeScreen
+import com.yesnoheun3.makeyourmorning.pages.main.screen.MainScreen
+import com.yesnoheun3.makeyourmorning.pages.time.screen.AddTimeScreen
 import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTimeViewModel
 
 @Composable

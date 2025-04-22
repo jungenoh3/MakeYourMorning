@@ -1,4 +1,4 @@
-package com.yesnoheun3.makeyourmorning.pages.time
+package com.yesnoheun3.makeyourmorning.pages.time.compose
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

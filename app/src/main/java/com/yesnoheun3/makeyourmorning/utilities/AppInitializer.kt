@@ -6,9 +6,9 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 
-class MainApplication: Application() {
+class AppInitializer: Application() {
 
-    private lateinit var foregroundDetector: MainLifeCycleCallback
+    private lateinit var foregroundDetector: AppForegroundTracker
 
     override fun onCreate() {
         super.onCreate()
@@ -22,7 +22,7 @@ class MainApplication: Application() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        foregroundDetector = MainLifeCycleCallback.getInstance()
+        foregroundDetector = AppForegroundTracker.getInstance()
         registerActivityLifecycleCallbacks(foregroundDetector)
     }
 
