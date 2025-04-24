@@ -1,4 +1,4 @@
-package com.yesnoheun3.makeyourmorning.pages.sleep.compose
+package com.yesnoheun3.makeyourmorning.common.compose
 
 import android.widget.NumberPicker
 import androidx.compose.foundation.layout.height

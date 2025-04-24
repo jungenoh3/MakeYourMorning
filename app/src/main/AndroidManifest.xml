@@ -40,6 +40,15 @@
         </activity>
 
         <activity
+            android:name=".pages.day.DayManagerActivity"
+            android:exported="false"
+            android:showOnLockScreen="true"
+            android:turnScreenOn="true"
+            android:parentActivityName=".pages.main.MainActivity"
+            android:label="Day Manager">
+        </activity>
+
+        <activity
             android:name=".pages.sleep.SleepManagerActivity"
             android:exported="false"
             android:showOnLockScreen="true"

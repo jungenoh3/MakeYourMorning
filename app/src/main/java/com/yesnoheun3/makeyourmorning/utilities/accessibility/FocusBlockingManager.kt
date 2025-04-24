@@ -10,7 +10,7 @@ object FocusBlockingManager {
 
     private val _blockType = MutableStateFlow(BlockType.NIGHT)
     val getBlockType: BlockType get() = _blockType.value
-    val isNight: StateFlow<BlockType> get() = _blockType
+    val blockType: StateFlow<BlockType> get() = _blockType
 
     var blockingEndTime: Long = 0L
 

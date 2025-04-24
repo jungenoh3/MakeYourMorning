@@ -15,6 +15,7 @@ import com.yesnoheun3.makeyourmorning.pages.sleep.SleepManagerActivity
 import com.yesnoheun3.makeyourmorning.common.data.AlarmTime
 import com.yesnoheun3.makeyourmorning.common.data.BlockType
 import com.yesnoheun3.makeyourmorning.common.data.TimeType
+import com.yesnoheun3.makeyourmorning.pages.day.DayManagerActivity
 import com.yesnoheun3.makeyourmorning.pages.wakeup.WakeUpManagerActivity
 import com.yesnoheun3.makeyourmorning.utilities.AppForegroundTracker
 import com.yesnoheun3.makeyourmorning.utilities.accessibility.FocusBlockingManager
@@ -58,7 +59,8 @@ class AlarmReceiver: BroadcastReceiver() {
 
         FocusBlockingManager.stopBlocking()
         if (blockType == BlockType.NIGHT){
-            val activityIntent = Intent(context, WakeUpManagerActivity::class.java).apply {
+            FocusBlockingManager.setBlockTypeMorning()
+            val activityIntent = Intent(context, DayManagerActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
             startActivity(activityIntent, context)
