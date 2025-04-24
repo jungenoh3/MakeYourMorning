@@ -19,8 +19,8 @@ fun CustomColumn(color: Color = Color.White,
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues)
             .background(color)
+            .padding(paddingValues)
         ,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
