@@ -1,8 +1,6 @@
 package com.yesnoheun3.makeyourmorning.pages.main.screen
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,15 +21,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.yesnoheun3.makeyourmorning.pages.main.compose.InnerNavGraph
-import com.yesnoheun3.makeyourmorning.pages.time.screen.TimeScreen
-import com.yesnoheun3.makeyourmorning.pages.user.User
 import com.yesnoheun3.makeyourmorning.pages.main.data.BottomNavItem
-import com.yesnoheun3.makeyourmorning.pages.sleep.screen.SleepManagerScreen
 import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTimeViewModel
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow40
 
@@ -43,7 +36,7 @@ fun MainScreen(rootNavController: NavHostController, viewModel: AlarmTimeViewMod
     val navController = rememberNavController()
     val items = listOf(
         BottomNavItem.TimeSetting,
-        BottomNavItem.GoToSleep,
+        BottomNavItem.DayManage,
         BottomNavItem.User
     )
 

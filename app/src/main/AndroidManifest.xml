@@ -31,7 +31,7 @@
         </activity>
 
         <activity
-            android:name=".pages.sleep.SleepOverlayActivity"
+            android:name=".pages.day.NightOverlayActivity"
             android:exported="false"
             android:showOnLockScreen="false"
             android:turnScreenOn="true"
@@ -49,32 +49,13 @@
         </activity>
 
         <activity
-            android:name=".pages.sleep.SleepManagerActivity"
-            android:exported="false"
-            android:showOnLockScreen="true"
-            android:turnScreenOn="true"
-            android:parentActivityName=".pages.main.MainActivity"
-            android:label="Sleep Manager">
-        </activity>
-
-        <activity
-            android:name=".pages.wakeup.WakeUpOverlayActivity"
+            android:name=".pages.day.MorningOverlayActivity"
             android:exported="false"
             android:showOnLockScreen="false"
             android:turnScreenOn="true"
             android:parentActivityName=".pages.main.MainActivity"
             android:label="WakeUp Overlay">
         </activity>
-
-        <activity
-            android:name=".pages.wakeup.WakeUpManagerActivity"
-            android:exported="false"
-            android:showOnLockScreen="true"
-            android:turnScreenOn="true"
-            android:parentActivityName=".pages.main.MainActivity"
-            android:label="WakeUp Manager">
-        </activity>
-
 
         <receiver android:name=".utilities.alarm.AlarmReceiver" />
         <service

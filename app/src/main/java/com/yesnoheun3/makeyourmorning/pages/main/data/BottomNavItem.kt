@@ -12,6 +12,6 @@ sealed class BottomNavItem(
     val icon: ImageVector
 ){
     object TimeSetting : BottomNavItem("시간 설정", "time", Icons.Rounded.Notifications)
-    object GoToSleep : BottomNavItem("자러 가기", "goToSleep", Icons.Rounded.Create)
+    object DayManage : BottomNavItem("하루 준비", "dayManage", Icons.Rounded.Create)
     object User : BottomNavItem("설정", "user", Icons.Rounded.Person)
 }

@@ -16,6 +16,7 @@ import com.yesnoheun3.makeyourmorning.ui.theme.Yellow80
 import com.yesnoheun3.makeyourmorning.utilities.accessibility.FocusBlockingManager
 import com.yesnoheun3.makeyourmorning.utilities.alarm.AlarmScheduler
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 @Composable
 fun DayManagerScreen(){
@@ -23,6 +24,9 @@ fun DayManagerScreen(){
     val scheduler = AlarmScheduler(context)
     val blockTimeId = remember { mutableStateOf(LocalDateTime.now()) }
     val isBlocking by FocusBlockingManager.isBlocking.collectAsState()
+
+    // 그냥 사용자가 변경하게 하기
+
     val blockType by FocusBlockingManager.blockType.collectAsState()
 
     if (isBlocking){

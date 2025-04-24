@@ -5,8 +5,8 @@ import android.content.Intent
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import com.yesnoheun3.makeyourmorning.common.data.BlockType
-import com.yesnoheun3.makeyourmorning.pages.sleep.SleepOverlayActivity
-import com.yesnoheun3.makeyourmorning.pages.wakeup.WakeUpOverlayActivity
+import com.yesnoheun3.makeyourmorning.pages.day.NightOverlayActivity
+import com.yesnoheun3.makeyourmorning.pages.day.MorningOverlayActivity
 
 // TODO 권한이 필요하다!!!!
 class AppBlockAccessibilityService : AccessibilityService() {
@@ -56,9 +56,9 @@ class AppBlockAccessibilityService : AccessibilityService() {
 
     private fun showBlockingScreen() {
         val blockIntent = if (FocusBlockingManager.getBlockType == BlockType.NIGHT) {
-            Intent(this, SleepOverlayActivity::class.java)
+            Intent(this, NightOverlayActivity::class.java)
         } else {
-            Intent(this, WakeUpOverlayActivity::class.java)
+            Intent(this, MorningOverlayActivity::class.java)
         }
         blockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         blockIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)

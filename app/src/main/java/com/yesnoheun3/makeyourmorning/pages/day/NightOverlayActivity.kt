@@ -1,4 +1,4 @@
-package com.yesnoheun3.makeyourmorning.pages.sleep
+package com.yesnoheun3.makeyourmorning.pages.day
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,7 +7,7 @@ import com.yesnoheun3.makeyourmorning.common.compose.CustomOverlayScreen
 import com.yesnoheun3.makeyourmorning.ui.theme.Purple40
 import com.yesnoheun3.makeyourmorning.ui.theme.PurpleGrey80
 
-class SleepOverlayActivity : ComponentActivity() {
+class NightOverlayActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

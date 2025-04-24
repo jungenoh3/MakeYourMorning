@@ -10,7 +10,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.yesnoheun3.makeyourmorning.pages.day.screen.DayManagerScreen
 import com.yesnoheun3.makeyourmorning.pages.main.data.BottomNavItem
-import com.yesnoheun3.makeyourmorning.pages.sleep.screen.SleepManagerScreen
 import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTimeViewModel
 import com.yesnoheun3.makeyourmorning.pages.time.screen.TimeScreen
 import com.yesnoheun3.makeyourmorning.pages.user.User
@@ -26,7 +25,7 @@ fun InnerNavGraph(innerPadding: PaddingValues, navController: NavHostController,
             composable(BottomNavItem.TimeSetting.screenRoute) {
                 TimeScreen(navController = rootNavController, viewModel = viewModel)
             }
-            composable(BottomNavItem.GoToSleep.screenRoute) {
+            composable(BottomNavItem.DayManage.screenRoute) {
                 DayManagerScreen()
             }
             composable(BottomNavItem.User.screenRoute) {

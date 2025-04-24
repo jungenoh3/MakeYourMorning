@@ -11,7 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import com.yesnoheun3.makeyourmorning.utilities.AppForegroundTracker
 import com.yesnoheun3.makeyourmorning.R
-import com.yesnoheun3.makeyourmorning.pages.sleep.SleepOverlayActivity
+import com.yesnoheun3.makeyourmorning.pages.day.NightOverlayActivity
 
 class AlarmService: Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -35,7 +35,7 @@ class AlarmService: Service() {
 //            return START_NOT_STICKY
 //        }
 
-        val sleepIntent = Intent(this, SleepOverlayActivity::class.java)
+        val sleepIntent = Intent(this, NightOverlayActivity::class.java)
         val sleepPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
             addNextIntentWithParentStack(sleepIntent)
             getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)

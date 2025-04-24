@@ -20,9 +20,6 @@ fun NavigationGraph(startDestination: String = "main"){
         composable(route =  "main") {
             MainScreen(rootNavController = navController, viewModel = viewModel)
         }
-//        composable(route = "sleeping") {
-//            Sleeping(onDismiss = { navController.popBackStack() })
-//        }
         composable(route = "addTime?id={id}&isSleep={isSleep}",
             arguments = listOf(navArgument("id") {
                 type = NavType.StringType
