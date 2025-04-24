@@ -24,9 +24,6 @@ fun DayManagerScreen(){
     val scheduler = AlarmScheduler(context)
     val blockTimeId = remember { mutableStateOf(LocalDateTime.now()) }
     val isBlocking by FocusBlockingManager.isBlocking.collectAsState()
-
-    // 그냥 사용자가 변경하게 하기
-
     val blockType by FocusBlockingManager.blockType.collectAsState()
 
     if (isBlocking){
@@ -48,27 +45,11 @@ fun DayManagerScreen(){
             )
         }
     } else {
-        if (blockType == BlockType.NIGHT){
-            CustomPreparation(
-                blockTimeId = blockTimeId,
-                scheduler = scheduler,
-                backgroundColor = PurpleGrey80,
-                buttonColor = Purple40,
-                contentText = "자러 갈까요?",
-                buttonText = "누우러 가기",
-                blockType = BlockType.NIGHT
-            )
-        } else if (blockType == BlockType.MORNING) {
-            CustomPreparation(
-                blockTimeId = blockTimeId,
-                scheduler = scheduler,
-                backgroundColor = Yellow80,
-                buttonColor = Yellow60,
-                contentText = "좋은 아침이에요!",
-                buttonText = "일어나기",
-                blockType = BlockType.MORNING
-            )
-        }
+        CustomPreparation(
+            blockTimeId = blockTimeId,
+            scheduler = scheduler,
+            blockType = blockType
+        )
     }
 
 }
