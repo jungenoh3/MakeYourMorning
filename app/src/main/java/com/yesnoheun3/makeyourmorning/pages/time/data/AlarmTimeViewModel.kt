@@ -2,6 +2,7 @@ package com.yesnoheun3.makeyourmorning.pages.time.data
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import com.yesnoheun3.makeyourmorning.common.data.AlarmTime
 
 class AlarmTimeViewModel : ViewModel() {
     private  val _items = mutableStateListOf<AlarmTime>()

@@ -1,17 +1,13 @@
 package com.yesnoheun3.makeyourmorning.pages.time.screen
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
@@ -145,7 +141,7 @@ fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel, id: String
                     )
                     if (viewModel.items[index].isOn){
                          scheduler.cancel(viewModel.items[index].id)
-                         scheduler.schedule(viewModel.items[index])
+                         scheduler.scheduleAlarm(viewModel.items[index])
                     }
                 } else { // 추가할 때는 스케쥴/
                     viewModel.addItem(
@@ -153,7 +149,7 @@ fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel, id: String
                         minute = timePickerState.minute,
                         daysOfWeek = selectedDays,
                         isSleep = isSleep)
-                     scheduler.schedule(viewModel.last)
+                     scheduler.scheduleAlarm(viewModel.last)
                 }
                 popBack()
             },

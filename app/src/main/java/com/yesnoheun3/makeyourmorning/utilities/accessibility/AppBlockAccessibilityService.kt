@@ -4,10 +4,12 @@ import android.accessibilityservice.AccessibilityService
 import android.content.Intent
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import com.yesnoheun3.makeyourmorning.common.data.BlockType
 import com.yesnoheun3.makeyourmorning.pages.sleep.SleepOverlayActivity
+import com.yesnoheun3.makeyourmorning.pages.wakeup.WakeUpOverlayActivity
 
 // TODO 권한이 필요하다!!!!
-class AppBlockAccessibilityService: AccessibilityService() {
+class AppBlockAccessibilityService : AccessibilityService() {
 
     private val allowedApps = setOf(
         "com.yesnoheun3.makeyourmorning", // Your app
@@ -33,7 +35,7 @@ class AppBlockAccessibilityService: AccessibilityService() {
         }
 
         val packageName = event.packageName?.toString() ?: return
-        if (packageName !in allowedApps){
+        if (packageName !in allowedApps) {
             Log.d("BlockService", "Blocking ${packageName}")
             returnToHomeScreen()
             showBlockingScreen()
@@ -52,11 +54,14 @@ class AppBlockAccessibilityService: AccessibilityService() {
         startActivity(homeIntent)
     }
 
-    private fun showBlockingScreen(){
-        val blockIntent = Intent(this, SleepOverlayActivity::class.java)
+    private fun showBlockingScreen() {
+        val blockIntent = if (FocusBlockingManager.getBlockType == BlockType.NIGHT) {
+            Intent(this, SleepOverlayActivity::class.java)
+        } else {
+            Intent(this, WakeUpOverlayActivity::class.java)
+        }
         blockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         blockIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(blockIntent)
     }
-
 }

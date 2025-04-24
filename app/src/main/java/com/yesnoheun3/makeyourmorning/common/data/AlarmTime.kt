@@ -1,5 +1,6 @@
-package com.yesnoheun3.makeyourmorning.pages.time.data
+package com.yesnoheun3.makeyourmorning.common.data
 
+import java.time.LocalDateTime
 import java.util.UUID
 
 data class AlarmTime (

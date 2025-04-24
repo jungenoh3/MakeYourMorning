@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,7 +42,7 @@ import com.yesnoheun3.makeyourmorning.common.compose.CustomColumn
 import com.yesnoheun3.makeyourmorning.pages.time.compose.SwipeToDeleteContainer
 import com.yesnoheun3.makeyourmorning.pages.time.compose.TimeCard
 import com.yesnoheun3.makeyourmorning.utilities.alarm.AlarmScheduler
-import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTime
+import com.yesnoheun3.makeyourmorning.common.data.AlarmTime
 import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTimeViewModel
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow40
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow60
@@ -154,7 +153,7 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
                                 onCheckedChanged = { isChecked ->
                                     viewModel.updateIsOn(instanceItem[index].id, isChecked)
                                     if (isChecked) {
-                                        scheduler.schedule(instanceItem[index])
+                                        scheduler.scheduleAlarm(instanceItem[index])
                                     } else {
                                         scheduler.cancel(instanceItem[index].id)
                                     }

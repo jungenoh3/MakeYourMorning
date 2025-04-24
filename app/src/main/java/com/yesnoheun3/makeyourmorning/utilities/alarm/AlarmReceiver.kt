@@ -12,8 +12,12 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.yesnoheun3.makeyourmorning.R
 import com.yesnoheun3.makeyourmorning.pages.sleep.SleepManagerActivity
-import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTime
+import com.yesnoheun3.makeyourmorning.common.data.AlarmTime
+import com.yesnoheun3.makeyourmorning.common.data.BlockType
+import com.yesnoheun3.makeyourmorning.common.data.TimeType
+import com.yesnoheun3.makeyourmorning.pages.wakeup.WakeUpManagerActivity
 import com.yesnoheun3.makeyourmorning.utilities.AppForegroundTracker
+import com.yesnoheun3.makeyourmorning.utilities.accessibility.FocusBlockingManager
 
 class AlarmReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -21,22 +25,58 @@ class AlarmReceiver: BroadcastReceiver() {
         if (intent == null || context == null){
             return
         }
+        System.out.println("알림을 받았습니다.")
 
+        val ordinal = intent.getIntExtra("com.yesnoheun3.makeyourmorning.type", -1)
+        val timeType = if (ordinal != -1) TimeType.values()[ordinal] else null
+
+        if (timeType == null){
+            return
+        }
+
+        if (timeType == TimeType.ALARM){
+            fireAlarm(context =  context, intent = intent)
+        } else if (timeType == TimeType.BLOCK){
+            manageBlock(context = context, intent = intent)
+        }
+    }
+
+    fun fireAlarm(context: Context, intent: Intent) {
+        val activityIntent = Intent(context, SleepManagerActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        startActivity(activityIntent, context)
+        setNextAlarm(intent, context)
+    }
+
+    fun manageBlock(context: Context, intent: Intent) {
+        val blockOrdinal = intent.getIntExtra("com.yesnoheun3.makeyourmorning.blockType", -1)
+        val blockType = if (blockOrdinal != -1) BlockType.values()[blockOrdinal] else null
+        if (blockType == null){
+            return
+        }
+
+        FocusBlockingManager.stopBlocking()
+        if (blockType == BlockType.NIGHT){
+            val activityIntent = Intent(context, WakeUpManagerActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            startActivity(activityIntent, context)
+        } else {
+            FocusBlockingManager.setBlockTypeNight()
+        }
+    }
+
+    fun startActivity(activityIntent: Intent, context: Context){
         if (AppForegroundTracker.getInstance().isForeground){
-            val activityIntent = Intent(context, SleepManagerActivity::class.java)
-            activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(activityIntent)
         } else {
             val hasPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS
                 ) == PackageManager.PERMISSION_GRANTED
-            } else {
-                true
-            }
-            if (hasPermission) fireNotification(context = context)
+            } else { true }
+            if (hasPermission) fireNotification(context = context, activityIntent)
         }
-
-        setNextAlarm(intent, context)
     }
 
     fun setNextAlarm(intent: Intent, context: Context){
@@ -56,14 +96,10 @@ class AlarmReceiver: BroadcastReceiver() {
             daysOfWeek = daysOfWeek,
             isOn = true
         )
-        AlarmScheduler(context).schedule(item)
+        AlarmScheduler(context).scheduleAlarm(item)
     }
 
-    fun fireNotification(context: Context){
-        val activityIntent = Intent(context, SleepManagerActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        }
-
+    fun fireNotification(context: Context, activityIntent: Intent){
         val pendingIntent = PendingIntent.getActivity(
             context,
             1002,
@@ -74,7 +110,7 @@ class AlarmReceiver: BroadcastReceiver() {
         val notification = NotificationCompat.Builder(context, "make_your_morning5134")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("잘 시간!")
-            .setContentText("일어나세요!")
+            .setContentText("잘 준비를 합시다!")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setContentIntent(pendingIntent)
