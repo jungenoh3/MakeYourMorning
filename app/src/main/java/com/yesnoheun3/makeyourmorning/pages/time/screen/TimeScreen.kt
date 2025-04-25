@@ -29,6 +29,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,6 +60,8 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
     val pageState = rememberPagerState(initialPage = 0, pageCount = { typeList.size })
     val coroutineScope = rememberCoroutineScope()
     val isSleep = pageState.currentPage == 0
+
+    val item = viewModel.items.observeAsState(emptyList())
 
     Scaffold (
         modifier = Modifier.fillMaxSize(),
@@ -130,7 +133,7 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
             HorizontalPager(
                 state = pageState
             ) { page ->
-                val instanceItem = viewModel.items.filter { it.isSleep == (page == 0) }
+                val instanceItem = item.value.filter { it.isSleep == (page == 0) }
 
                 LazyColumn(
                     state = scrollState,
@@ -153,9 +156,9 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
                                 onCheckedChanged = { isChecked ->
                                     viewModel.updateIsOn(instanceItem[index].id, isChecked)
                                     if (isChecked) {
-                                        scheduler.scheduleAlarm(instanceItem[index])
+                                        // scheduler.scheduleAlarm(instanceItem[index])
                                     } else {
-                                        scheduler.cancel(instanceItem[index].id)
+                                        // scheduler.cancel(instanceItem[index].id)
                                     }
                                 },
                             )

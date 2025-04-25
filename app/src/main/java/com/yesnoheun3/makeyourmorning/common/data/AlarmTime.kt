@@ -1,10 +1,13 @@
 package com.yesnoheun3.makeyourmorning.common.data
 
-import java.time.LocalDateTime
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.util.UUID
 
+@Entity()
 data class AlarmTime (
-    val id: String = UUID.randomUUID().toString(),
+    @PrimaryKey val id: String = UUID.randomUUID().toString(),
     val hour: Int,
     val minute: Int,
     val daysOfWeek: List<Int>,

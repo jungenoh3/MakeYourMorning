@@ -1,0 +1,31 @@
+package com.yesnoheun3.makeyourmorning.utilities.database.dao
+
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import com.yesnoheun3.makeyourmorning.common.data.AlarmTime
+
+@Dao
+interface AlarmTimeDao {
+    @Query("SELECT * FROM alarmtime")
+    fun getAll(): LiveData<List<AlarmTime>>
+
+    @Query("SELECT * FROM alarmtime WHERE id = :id")
+    suspend fun getOne(id: String): AlarmTime
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertOne(item: AlarmTime)
+
+    @Delete
+    suspend fun delete(item: AlarmTime)
+
+    @Update
+    suspend fun updateOne(item: AlarmTime)
+
+    @Query("UPDATE alarmtime SET isOn = :isOn WHERE id = :id")
+    suspend fun updateIsOn(id: String, isOn: Boolean)
+}

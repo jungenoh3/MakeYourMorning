@@ -1,53 +1,54 @@
 package com.yesnoheun3.makeyourmorning.pages.time.data
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.yesnoheun3.makeyourmorning.common.data.AlarmTime
+import com.yesnoheun3.makeyourmorning.utilities.database.AppRepository
+import kotlinx.coroutines.launch
+import kotlin.math.min
 
-class AlarmTimeViewModel : ViewModel() {
-    private  val _items = mutableStateListOf<AlarmTime>()
-    val items: List<AlarmTime> get() = _items
-    val last: AlarmTime get() = _items.last()
+class AlarmTimeViewModel(application: Application) : AndroidViewModel(application) {
+    private val _repository = AppRepository(application)
+    val items: LiveData<List<AlarmTime>> get() = _repository.getAllAlarmTime()
 
-    init {
-        _items.add(
-            AlarmTime(
-                hour = 19,
-                minute = 0,
-                isSleep = true,
-                daysOfWeek = listOf(),
-                isOn = true
-            )
-        )
-    }
-
-    fun getIndex(id: String): Int {
-        return _items.indexOfFirst { it.id == id }
+    fun getOne(id: String, onResult: (AlarmTime) -> Unit) {
+        viewModelScope.launch {
+            val item = _repository.getOneAlarmTime(id)
+            onResult(item)
+        }
     }
 
     fun updateIsOn(id: String, isOn: Boolean){
-        val index = getIndex(id)
-        _items[index] = _items[index].copy(isOn = isOn)
+        viewModelScope.launch {
+            _repository.updateIsOn(id, isOn)
+        }
     }
 
-    fun updateTime(id: String, hour: Int, minute: Int, daysOfWeek: List<Int>){
-        val index = getIndex(id)
-        _items[index] = _items[index].copy(hour = hour, minute = minute, daysOfWeek = daysOfWeek)
+    fun updateTime(origin: AlarmTime, hour: Int, minute: Int, daysOfWeek: List<Int>){
+        viewModelScope.launch {
+            val update = origin.copy(hour = hour, minute = minute, daysOfWeek = daysOfWeek)
+            _repository.updateAlarmTime(update)
+        }
     }
 
     fun addItem(hour: Int, minute: Int, daysOfWeek: List<Int>, isSleep: Boolean){
-        _items.add(
-            AlarmTime(
+        viewModelScope.launch {
+            val newItem = AlarmTime(
                 hour = hour,
                 minute = minute,
                 daysOfWeek = daysOfWeek.sorted(),
                 isOn = true,
                 isSleep = isSleep
             )
-        )
+            _repository.insertAlarmTine(newItem)
+        }
     }
 
     fun deleteItem(item: AlarmTime){
-        _items.remove(item)
+        viewModelScope.launch {
+            _repository.deleteAlarmTime(item)
+        }
     }
 }

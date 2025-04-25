@@ -21,7 +21,9 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerColors
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,8 +32,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import com.yesnoheun3.makeyourmorning.common.compose.CustomColumn
+import com.yesnoheun3.makeyourmorning.common.data.AlarmTime
 import com.yesnoheun3.makeyourmorning.utilities.alarm.AlarmScheduler
 import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTimeViewModel
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow10
@@ -39,6 +43,10 @@ import com.yesnoheun3.makeyourmorning.ui.theme.Yellow100
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow40
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow60
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow80
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,19 +63,26 @@ fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel, id: String
 
     val currentTime = Calendar.getInstance()
 
-    val index = if (id != null) { viewModel.getIndex(id) } else { -1 }
-
+    val itemState = remember { mutableStateOf<AlarmTime?>(null) }
     val timePickerState = rememberTimePickerState(
-        initialHour = if(index > -1) { viewModel.items[index].hour }
-                        else { currentTime.get(Calendar.HOUR_OF_DAY) },
-        initialMinute = if(index > -1) { viewModel.items[index].minute }
-                        else { currentTime.get(Calendar.MINUTE) },
-        is24Hour = false,
+        initialHour = currentTime.get(Calendar.HOUR_OF_DAY),
+        initialMinute = currentTime.get(Calendar.MINUTE),
+        is24Hour = false
     )
+    val selectedDays = remember { mutableStateListOf<Int>() }
 
-    val selectedDays = remember { if(index > -1) {
-        mutableStateListOf<Int>().apply { (viewModel.items[index].daysOfWeek) }
-    } else { mutableStateListOf<Int>() } }
+    LaunchedEffect(id) {
+        if (id != null) {
+            viewModel.getOne(id) { it ->
+                itemState.value = it
+                timePickerState.apply {
+                    hour = it.hour
+                    minute = it.minute
+                }
+                selectedDays.addAll(it.daysOfWeek)
+            }
+        }
+    }
 
     CustomColumn {
         Row(
@@ -102,7 +117,9 @@ fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel, id: String
                         text = day,
                         fontSize = 20.sp,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .wrapContentSize(Alignment.Center)
                     )
                 }
             }
@@ -132,24 +149,33 @@ fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel, id: String
 
         TextButton(
             onClick = {
-                if (id != null ){  // 수정할 때는 isOn에 따라서!
-                    viewModel.updateTime(
-                        id = id,
-                        hour = timePickerState.hour,
-                        minute = timePickerState.minute,
-                        daysOfWeek = selectedDays,
-                    )
-                    if (viewModel.items[index].isOn){
-                         scheduler.cancel(viewModel.items[index].id)
-                         scheduler.scheduleAlarm(viewModel.items[index])
+                CoroutineScope(Dispatchers.Main).launch {
+                    if (id != null) {  // 수정할 때는 isOn에 따라서!
+                        viewModel.updateTime(
+                            origin = itemState.value!!,
+                            hour = timePickerState.hour,
+                            minute = timePickerState.minute,
+                            daysOfWeek = selectedDays,
+                        )
+//                        if (item!!.isOn) {
+//                            scheduler.cancel(item.id)
+//                            viewModel.getOne(id) { item ->
+//                                scheduler.scheduleAlarm(item)
+//                            }
+//                        }
+                    } else { // 추가할 때는 스케쥴/
+                        viewModel.addItem(
+                            hour = timePickerState.hour,
+                            minute = timePickerState.minute,
+                            daysOfWeek = selectedDays,
+                            isSleep = isSleep
+                        )
+//                        delay(200)
+//                        val lastItem = viewModel.items.value?.lastOrNull()
+//                        if (lastItem != null) {
+//                            scheduler.scheduleAlarm(lastItem)
+//                        }
                     }
-                } else { // 추가할 때는 스케쥴/
-                    viewModel.addItem(
-                        hour = timePickerState.hour,
-                        minute = timePickerState.minute,
-                        daysOfWeek = selectedDays,
-                        isSleep = isSleep)
-                     scheduler.scheduleAlarm(viewModel.last)
                 }
                 popBack()
             },

@@ -36,7 +36,7 @@
             android:showOnLockScreen="false"
             android:turnScreenOn="true"
             android:parentActivityName=".pages.main.MainActivity"
-            android:label="Sleep Overlay">
+            android:label="Night Overlay">
         </activity>
 
         <activity
@@ -54,7 +54,7 @@
             android:showOnLockScreen="false"
             android:turnScreenOn="true"
             android:parentActivityName=".pages.main.MainActivity"
-            android:label="WakeUp Overlay">
+            android:label="Morning Overlay">
         </activity>
 
         <receiver android:name=".utilities.alarm.AlarmReceiver" />
