@@ -57,7 +57,7 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
     val scheduler = AlarmScheduler(context)
 
     val scrollState = rememberLazyListState()
-    val typeList = listOf<String>("취침 시간", "기상 시간")
+    val typeList = listOf<String>("취침 시간") // , "기상 시간")
     val pageState = rememberPagerState(initialPage = 0, pageCount = { typeList.size })
     val coroutineScope = rememberCoroutineScope()
     val isSleep = pageState.currentPage == 0
