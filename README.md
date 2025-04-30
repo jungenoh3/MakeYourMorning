@@ -5,8 +5,8 @@
 - (굳이 BottomNavItem 말고 Column으로 커스텀 할 수 있다는 내용) https://stackoverflow.com/questions/73003424/adding-spacing-between-bottomnavigationitems-icon-label
 
 ## 할 것들...
-- 기상 시간 제거 (위젯에서만 제거: 지금은 취침 시간 안내만 하자)
-- AddTimeScreen 백버튼
+- 기상 시간 제거 (위젯에서만 제거: 지금은 취침 시간 안내만 하자) (함)
+- AddTimeScreen 백버튼 (함)
 - overlay에 현재 시간 크게 보여주기
 - 설정은 주로 권한 설정. 블록할 리스트들 설정 (권한이 허용된 한에서)
 

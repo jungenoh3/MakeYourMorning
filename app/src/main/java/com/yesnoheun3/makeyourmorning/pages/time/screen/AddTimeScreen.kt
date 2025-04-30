@@ -2,6 +2,7 @@ package com.yesnoheun3.makeyourmorning.pages.time.screen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,14 +12,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerColors
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,7 +61,12 @@ import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel, id: String?, isSleep: Boolean){
+fun AddTimeScreen(
+    popBack: () -> Unit,
+    viewModel: AlarmTimeViewModel,
+    id: String?,
+    isSleep: Boolean
+) {
     val context = LocalContext.current
     val scheduler = AlarmScheduler(context)
 
@@ -83,108 +98,132 @@ fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel, id: String
         }
     }
 
-    CustomColumn {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            daysOfWeek.forEachIndexed { index, day ->
-                val dayNum = daysOfWeekNum[index]
-                val isSelected = selectedDays.contains(dayNum)
-
-                OutlinedButton(
-                    onClick = {
-                        if (isSelected) {
-                            selectedDays.remove(dayNum)
-                        }
-                        else {
-                            selectedDays.add(dayNum)
-                        }
-                    },
-                    modifier = Modifier.size(buttonSize),
-                    shape = CircleShape,
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonColors(
-                        containerColor = if (isSelected) Yellow60 else Yellow80,
-                        contentColor = if (isSelected) Color.Black else Color.Gray,
-                        disabledContainerColor = Color.DarkGray,
-                        disabledContentColor = Color.White
-                    ),
-                    border = BorderStroke(1.dp, color = Yellow40)
-                ) {
-                    Text(
-                        text = day,
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .wrapContentSize(Alignment.Center)
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        TimePicker(
-            state = timePickerState,
-            colors = TimePickerColors(
-                clockDialColor = Yellow100,
-                selectorColor = Yellow60,
-                containerColor = Color.White,
-                periodSelectorBorderColor = Color.Transparent,
-                clockDialSelectedContentColor = Yellow10,
-                clockDialUnselectedContentColor = Color.Gray,
-                periodSelectorSelectedContainerColor = Yellow60,
-                periodSelectorUnselectedContainerColor = Yellow100,
-                periodSelectorSelectedContentColor = Yellow10,
-                periodSelectorUnselectedContentColor = Color.Gray,
-                timeSelectorSelectedContainerColor = Yellow60,
-                timeSelectorUnselectedContainerColor = Yellow100,
-                timeSelectorSelectedContentColor = Yellow10,
-                timeSelectorUnselectedContentColor = Color.Gray
-            )
-        )
-
-        TextButton(
-            onClick = {
-                CoroutineScope(Dispatchers.Main).launch {
-                    if (id != null) {  // 수정할 때는 isOn에 따라서!
-                        viewModel.updateTime(
-                            origin = itemState.value!!,
-                            hour = timePickerState.hour,
-                            minute = timePickerState.minute,
-                            daysOfWeek = selectedDays.sorted(),
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("") },
+                navigationIcon = {
+                    IconButton(onClick = popBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back button"
                         )
-//                        if (item!!.isOn) {
-//                            scheduler.cancel(item.id)
-//                            viewModel.getOne(id) { item ->
-//                                scheduler.scheduleAlarm(item)
-//                            }
-//                        }
-                    } else { // 추가할 때는 스케쥴/
-                        viewModel.addItem(
-                            hour = timePickerState.hour,
-                            minute = timePickerState.minute,
-                            daysOfWeek = selectedDays.sorted(),
-                            isSleep = isSleep
-                        )
-//                        delay(200)
-//                        val lastItem = viewModel.items.value?.lastOrNull()
-//                        if (lastItem != null) {
-//                            scheduler.scheduleAlarm(lastItem)
-//                        }
                     }
                 }
-                popBack()
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Yellow60,
-                contentColor = Yellow10
-            ),
-            shape = CircleShape
+
+            )
+        }
+    ) { paddingValue ->
+        CustomColumn(
+            paddingValues = paddingValue
         ) {
-            Text(text = if (id != null) { "시간 수정" } else { "시간 추가 "})
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                daysOfWeek.forEachIndexed { index, day ->
+                    val dayNum = daysOfWeekNum[index]
+                    val isSelected = selectedDays.contains(dayNum)
+
+                    OutlinedButton(
+                        onClick = {
+                            if (isSelected) {
+                                selectedDays.remove(dayNum)
+                            } else {
+                                selectedDays.add(dayNum)
+                            }
+                        },
+                        modifier = Modifier.size(buttonSize),
+                        shape = CircleShape,
+                        contentPadding = PaddingValues(0.dp),
+                        colors = ButtonColors(
+                            containerColor = if (isSelected) Yellow60 else Yellow80,
+                            contentColor = if (isSelected) Color.Black else Color.Gray,
+                            disabledContainerColor = Color.DarkGray,
+                            disabledContentColor = Color.White
+                        ),
+                        border = BorderStroke(1.dp, color = Yellow40)
+                    ) {
+                        Text(
+                            text = day,
+                            fontSize = 20.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .wrapContentSize(Alignment.Center)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            TimePicker(
+                state = timePickerState,
+                colors = TimePickerColors(
+                    clockDialColor = Yellow100,
+                    selectorColor = Yellow60,
+                    containerColor = Color.White,
+                    periodSelectorBorderColor = Color.Transparent,
+                    clockDialSelectedContentColor = Yellow10,
+                    clockDialUnselectedContentColor = Color.Gray,
+                    periodSelectorSelectedContainerColor = Yellow60,
+                    periodSelectorUnselectedContainerColor = Yellow100,
+                    periodSelectorSelectedContentColor = Yellow10,
+                    periodSelectorUnselectedContentColor = Color.Gray,
+                    timeSelectorSelectedContainerColor = Yellow60,
+                    timeSelectorUnselectedContainerColor = Yellow100,
+                    timeSelectorSelectedContentColor = Yellow10,
+                    timeSelectorUnselectedContentColor = Color.Gray
+                )
+            )
+
+            TextButton(
+                onClick = {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        if (id != null) {  // 수정할 때는 isOn에 따라서!
+                            viewModel.updateTime(
+                                origin = itemState.value!!,
+                                hour = timePickerState.hour,
+                                minute = timePickerState.minute,
+                                daysOfWeek = selectedDays.sorted(),
+                            )
+                            //                        if (item!!.isOn) {
+                            //                            scheduler.cancel(item.id)
+                            //                            viewModel.getOne(id) { item ->
+                            //                                scheduler.scheduleAlarm(item)
+                            //                            }
+                            //                        }
+                        } else { // 추가할 때는 스케쥴/
+                            viewModel.addItem(
+                                hour = timePickerState.hour,
+                                minute = timePickerState.minute,
+                                daysOfWeek = selectedDays.sorted(),
+                                isSleep = isSleep
+                            )
+                            //                        delay(200)
+                            //                        val lastItem = viewModel.items.value?.lastOrNull()
+                            //                        if (lastItem != null) {
+                            //                            scheduler.scheduleAlarm(lastItem)
+                            //                        }
+                        }
+                    }
+                    popBack()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Yellow60,
+                    contentColor = Yellow10
+                ),
+                shape = CircleShape
+            ) {
+                Text(
+                    text = if (id != null) {
+                        "시간 수정"
+                    } else {
+                        "시간 추가 "
+                    }
+                )
+            }
         }
     }
 }
