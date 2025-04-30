@@ -22,6 +22,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -49,8 +50,11 @@ import com.yesnoheun3.makeyourmorning.utilities.accessibility.AccessibilityServi
 import com.yesnoheun3.makeyourmorning.utilities.accessibility.AppBlockAccessibilityService
 import com.yesnoheun3.makeyourmorning.utilities.accessibility.FocusBlockingManager
 import com.yesnoheun3.makeyourmorning.utilities.alarm.AlarmScheduler
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 
 @Composable
@@ -69,10 +73,11 @@ fun CustomPreparation(
     DisposableEffect(isAccessibilityEnabled) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                isAccessibilityEnabledFlow.value = AccessibilityServiceChecker.isAccessibilityServiceEnabled(
-                    context,
-                    AppBlockAccessibilityService::class.java
-                )
+                isAccessibilityEnabledFlow.value =
+                    AccessibilityServiceChecker.isAccessibilityServiceEnabled(
+                        context,
+                        AppBlockAccessibilityService::class.java
+                    )
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -91,7 +96,7 @@ fun CustomPreparation(
         animationSpec = tween(400)
     )
 
-    Surface (
+    Surface(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundColor)
@@ -99,18 +104,9 @@ fun CustomPreparation(
         shape = RoundedCornerShape(16.dp),
         tonalElevation = 8.dp
     ) {
-        CustomColumn (
+        CustomColumn(
             paddingValues = PaddingValues(18.dp)
-        ){
-            Crossfade(targetState = blockType) { type ->
-                Text(
-                    text = if (type == BlockType.NIGHT) "취침 준비" else "기상 시간",
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.DarkGray
-                )
-            }
-            Spacer(modifier = Modifier.height(30.dp))
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -143,7 +139,7 @@ fun CustomPreparation(
                 Switch(
                     checked = blockType == BlockType.NIGHT,
                     onCheckedChange = {
-                        if (blockType == BlockType.NIGHT){
+                        if (blockType == BlockType.NIGHT) {
                             FocusBlockingManager.setBlockTypeMorning()
                         } else if (blockType == BlockType.MORNING) {
                             FocusBlockingManager.setBlockTypeNight()
@@ -151,6 +147,10 @@ fun CustomPreparation(
                     }
                 )
             }
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            ClockText()
 
             Spacer(modifier = Modifier.height(40.dp))
 
@@ -220,4 +220,23 @@ fun CustomPreparation(
             }
         }
     }
+}
+
+@Composable
+fun ClockText() {
+    var currentTime by remember { mutableStateOf(LocalTime.now()) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            currentTime = LocalTime.now()
+            delay(1000L) // update every second
+        }
+    }
+
+    Text(
+        text = "현재 시간: ${currentTime.format(DateTimeFormatter.ofPattern("HH:mm"))}",
+        fontSize = 40.sp,
+        fontWeight = FontWeight.SemiBold,
+        color = Color.DarkGray
+    )
 }
