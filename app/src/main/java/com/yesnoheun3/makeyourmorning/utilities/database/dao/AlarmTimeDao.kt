@@ -1,6 +1,5 @@
 package com.yesnoheun3.makeyourmorning.utilities.database.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -8,11 +7,12 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.yesnoheun3.makeyourmorning.common.data.AlarmTime
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AlarmTimeDao {
     @Query("SELECT * FROM alarmtime")
-    fun getAll(): LiveData<List<AlarmTime>>
+    fun getAll(): Flow<List<AlarmTime>>
 
     @Query("SELECT * FROM alarmtime WHERE id = :id")
     suspend fun getOne(id: String): AlarmTime

@@ -2,22 +2,26 @@ package com.yesnoheun3.makeyourmorning.pages.time.data
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.yesnoheun3.makeyourmorning.common.data.AlarmTime
 import com.yesnoheun3.makeyourmorning.utilities.database.AppRepository
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlin.math.min
 
 class AlarmTimeViewModel(application: Application) : AndroidViewModel(application) {
     private val _repository = AppRepository(application)
-    val items: LiveData<List<AlarmTime>> get() = _repository.getAllAlarmTime()
+    val items: StateFlow<List<AlarmTime>> = _repository
+        .getAllAlarmTime()
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList()
+        )
 
-    fun getOne(id: String, onResult: (AlarmTime) -> Unit) {
-        viewModelScope.launch {
-            val item = _repository.getOneAlarmTime(id)
-            onResult(item)
-        }
+    suspend fun getOne(id: String) : AlarmTime {
+        return _repository.getOneAlarmTime(id)
     }
 
     fun updateIsOn(id: String, isOn: Boolean){

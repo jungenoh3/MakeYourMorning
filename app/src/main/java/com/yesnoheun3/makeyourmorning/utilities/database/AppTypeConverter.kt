@@ -1,20 +1,19 @@
 package com.yesnoheun3.makeyourmorning.utilities.database
 
 import androidx.room.TypeConverter
+import org.json.JSONArray
 
 class AppTypeConverter {
     @TypeConverter
-    fun fromListIntToString(intList: List<Int>): String = intList.toString()
+    fun fromListIntToString(intList: List<Int>): String {
+        return JSONArray(intList).toString()
+    }
     @TypeConverter
     fun toListIntFromString(stringList: String): List<Int> {
-        val result = ArrayList<Int>()
-        val split = stringList.replace("[", "").replace("]", "").replace(" ", "").split(",")
-        for (n in split) {
-            try {
-                result.add(n.toInt())
-            } catch (e: Exception) {
-
-            }
+        val jsonArray = JSONArray(stringList)
+        val result = mutableListOf<Int>()
+        for (i in 0 until jsonArray.length()) {
+            result.add(jsonArray.getInt(i))
         }
         return result
     }

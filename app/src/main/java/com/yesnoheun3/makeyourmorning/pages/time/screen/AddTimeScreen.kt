@@ -73,14 +73,13 @@ fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel, id: String
 
     LaunchedEffect(id) {
         if (id != null) {
-            viewModel.getOne(id) { it ->
-                itemState.value = it
-                timePickerState.apply {
-                    hour = it.hour
-                    minute = it.minute
-                }
-                selectedDays.addAll(it.daysOfWeek)
+            val item = viewModel.getOne(id)
+            itemState.value = item
+            timePickerState.apply {
+                hour = item.hour
+                minute = item.minute
             }
+            selectedDays.addAll(item.daysOfWeek)
         }
     }
 
@@ -155,7 +154,7 @@ fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel, id: String
                             origin = itemState.value!!,
                             hour = timePickerState.hour,
                             minute = timePickerState.minute,
-                            daysOfWeek = selectedDays,
+                            daysOfWeek = selectedDays.sorted(),
                         )
 //                        if (item!!.isOn) {
 //                            scheduler.cancel(item.id)
@@ -167,7 +166,7 @@ fun AddTimeScreen(popBack: () -> Unit, viewModel: AlarmTimeViewModel, id: String
                         viewModel.addItem(
                             hour = timePickerState.hour,
                             minute = timePickerState.minute,
-                            daysOfWeek = selectedDays,
+                            daysOfWeek = selectedDays.sorted(),
                             isSleep = isSleep
                         )
 //                        delay(200)
