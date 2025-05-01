@@ -6,12 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.yesnoheun3.makeyourmorning.common.data.AlarmTime
+import com.yesnoheun3.makeyourmorning.pages.setting.data.InstalledApp
 import com.yesnoheun3.makeyourmorning.utilities.database.dao.AlarmTimeDao
+import com.yesnoheun3.makeyourmorning.utilities.database.dao.InstalledAppDao
 
 @TypeConverters(AppTypeConverter::class)
-@Database(entities = [AlarmTime::class], version = 1)
+@Database(entities = [AlarmTime::class, InstalledApp::class], version = 1)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun alarmTimeDao(): AlarmTimeDao
+    abstract fun installedAppDao(): InstalledAppDao
 
     companion object {
         private var instance: AppDatabase? = null

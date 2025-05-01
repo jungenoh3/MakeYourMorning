@@ -46,7 +46,7 @@ class AlarmTimeViewModel(application: Application) : AndroidViewModel(applicatio
                 isOn = true,
                 isSleep = isSleep
             )
-            _repository.insertAlarmTine(newItem)
+            _repository.insertAlarmTime(newItem)
         }
     }
 

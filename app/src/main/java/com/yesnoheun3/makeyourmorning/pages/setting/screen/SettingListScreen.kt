@@ -40,8 +40,8 @@ fun SettingList(navController: NavController) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 15.dp, horizontal = 20.dp)
                             .clickable { navController.navigate(cardList[index].screenRoute) }
+                            .padding(vertical = 15.dp, horizontal = 20.dp)
                     ) {
                         Text(cardList[index].content, fontSize = 15.sp)
                     }

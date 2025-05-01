@@ -7,20 +7,42 @@ import android.view.accessibility.AccessibilityEvent
 import com.yesnoheun3.makeyourmorning.common.data.BlockType
 import com.yesnoheun3.makeyourmorning.pages.day.NightOverlayActivity
 import com.yesnoheun3.makeyourmorning.pages.day.MorningOverlayActivity
+import com.yesnoheun3.makeyourmorning.utilities.database.AppRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 // TODO 권한이 필요하다!!!!
 class AppBlockAccessibilityService : AccessibilityService() {
-
-    private val allowedApps = setOf(
+    private lateinit var repository: AppRepository
+    private val defaultAllowedApps  = mutableSetOf(
         "com.yesnoheun3.makeyourmorning", // Your app
         "com.google.android.apps.nexuslauncher", // Launcher
         "com.google.android.googlequicksearchbox",
         "com.android.systemui",
     )
+    private val allowedApps = mutableSetOf<String>()
+
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-        // TODO 추후에 package는 별도로 추가
+        repository = AppRepository(application)
+
+        // Collect installed apps and add to allowedApps
+        serviceScope.launch {
+            repository.getAllInstalledApp()
+                .collectLatest { dbApps ->
+                    synchronized(allowedApps) {
+                        allowedApps.clear()
+                        allowedApps.addAll(defaultAllowedApps)
+                        allowedApps.addAll(dbApps)
+                    }
+                }
+        }
         println("Accessibility Service conntected")
     }
 
@@ -35,10 +57,12 @@ class AppBlockAccessibilityService : AccessibilityService() {
         }
 
         val packageName = event.packageName?.toString() ?: return
-        if (packageName !in allowedApps) {
-            Log.d("BlockService", "Blocking ${packageName}")
-            returnToHomeScreen()
-            showBlockingScreen()
+        synchronized(allowedApps) {
+            if (packageName !in allowedApps) {
+                Log.d("BlockService", "Blocking $packageName")
+                returnToHomeScreen()
+                showBlockingScreen()
+            }
         }
     }
 
