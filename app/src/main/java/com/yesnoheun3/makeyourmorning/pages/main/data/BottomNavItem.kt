@@ -13,5 +13,5 @@ sealed class BottomNavItem(
 ){
     object TimeSetting : BottomNavItem("시간 설정", "time", Icons.Rounded.Notifications)
     object DayManage : BottomNavItem("하루 준비", "dayManage", Icons.Rounded.Create)
-    object User : BottomNavItem("설정", "user", Icons.Rounded.Person)
+    object Setting : BottomNavItem("설정", "setting", Icons.Rounded.Person)
 }

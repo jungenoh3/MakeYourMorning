@@ -37,7 +37,7 @@ fun MainScreen(rootNavController: NavHostController, viewModel: AlarmTimeViewMod
     val items = listOf(
         BottomNavItem.TimeSetting,
         BottomNavItem.DayManage,
-        BottomNavItem.User
+        BottomNavItem.Setting
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
