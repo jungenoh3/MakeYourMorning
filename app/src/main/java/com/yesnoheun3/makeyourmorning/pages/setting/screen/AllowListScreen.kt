@@ -61,9 +61,7 @@ fun AllowListScreen() {
     val allowedList = viewModel.items.collectAsState()
 
     LaunchedEffect(Unit) {
-        val installedApps = withContext(Dispatchers.IO) {
-            getInstalledApps(context)
-        }
+        val installedApps = getInstalledApps(context)
         items.clear()
         items.addAll(installedApps)
     }

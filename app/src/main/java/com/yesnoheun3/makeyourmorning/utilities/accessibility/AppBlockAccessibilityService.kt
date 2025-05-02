@@ -17,32 +17,11 @@ import kotlinx.coroutines.launch
 // TODO 권한이 필요하다!!!!
 class AppBlockAccessibilityService : AccessibilityService() {
     private lateinit var repository: AppRepository
-    private val defaultAllowedApps  = mutableSetOf(
-        "com.yesnoheun3.makeyourmorning", // Your app
-        "com.google.android.apps.nexuslauncher", // Launcher
-        "com.google.android.googlequicksearchbox",
-        "com.android.systemui",
-    )
-    private val allowedApps = mutableSetOf<String>()
-
-    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
 
     override fun onServiceConnected() {
         super.onServiceConnected()
         repository = AppRepository(application)
 
-        // Collect installed apps and add to allowedApps
-        serviceScope.launch {
-            repository.getAllInstalledApp()
-                .collectLatest { dbApps ->
-                    synchronized(allowedApps) {
-                        allowedApps.clear()
-                        allowedApps.addAll(defaultAllowedApps)
-                        allowedApps.addAll(dbApps)
-                    }
-                }
-        }
         println("Accessibility Service conntected")
     }
 
@@ -57,15 +36,12 @@ class AppBlockAccessibilityService : AccessibilityService() {
         }
 
         val packageName = event.packageName?.toString() ?: return
-        synchronized(allowedApps) {
-            if (packageName !in allowedApps) {
-                Log.d("BlockService", "Blocking $packageName")
-                returnToHomeScreen()
-                showBlockingScreen()
-            }
+        if (packageName !in FocusBlockingManager.allowedAppList) {
+            Log.d("BlockService", "Blocking $packageName")
+            returnToHomeScreen()
+            showBlockingScreen()
         }
     }
-
 
     override fun onInterrupt() {
         TODO("Not yet implemented")

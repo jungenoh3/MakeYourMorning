@@ -2,6 +2,7 @@ package com.yesnoheun3.makeyourmorning.utilities.alarm
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
+import android.app.Application
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -103,7 +104,8 @@ class AlarmScheduler (private val context: Context) {
                 pendingIntent
             )
         }
-        FocusBlockingManager.startBlockingFor(1 * 15 * 1000L, item.type) // (분 * 초 * 1000L)
+        val application = context.applicationContext as Application
+        FocusBlockingManager.startBlockingFor(1 * 15 * 1000L, item.type, application) // (분 * 초 * 1000L)
     }
 
     fun cancel(id: String){
