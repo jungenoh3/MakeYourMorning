@@ -1,135 +1,171 @@
 package com.yesnoheun3.makeyourmorning
 
-import androidx.compose.foundation.background
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 //noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.TabRowDefaults.Divider
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.yesnoheun3.makeyourmorning.common.compose.MinutePicker
-import com.yesnoheun3.makeyourmorning.ui.theme.Purple40
-import com.yesnoheun3.makeyourmorning.ui.theme.PurpleGrey80
-import com.yesnoheun3.makeyourmorning.utilities.accessibility.AccessibilityServiceChecker
-import com.yesnoheun3.makeyourmorning.utilities.accessibility.AppBlockAccessibilityService
+import com.yesnoheun3.makeyourmorning.common.compose.CustomColumn
+import com.yesnoheun3.makeyourmorning.common.data.AlarmTime
+import com.yesnoheun3.makeyourmorning.ui.theme.MakeYourMorningTheme
+import com.yesnoheun3.makeyourmorning.ui.theme.Yellow10
+import com.yesnoheun3.makeyourmorning.ui.theme.Yellow60
+import com.yesnoheun3.makeyourmorning.utilities.alarm.AlarmScheduler
+import java.time.LocalDateTime
 
 
-// Preview용 위젯
-@Preview
-@Composable
-fun TestWidget() {
-    val context = LocalContext.current
-    var selectedMinute by remember { mutableIntStateOf(30) }
-    var isNightMode by remember { mutableStateOf(true) }
+class TestActivity: ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(PurpleGrey80)
-            .padding(24.dp),
-        shape = RoundedCornerShape(16.dp),
-        tonalElevation = 8.dp
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Text(
-                text = "취침 준비",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.DarkGray
-            )
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Text("앱 차단 허용 (접근성)", color = Color.DarkGray)
-                Switch(
-                    checked = false,
-                    onCheckedChange = {
-                    }
-                )
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Text("모드: ${if (isNightMode) "취침" else "기상"}", color = Color.DarkGray)
-                Switch(
-                    checked = isNightMode,
-                    onCheckedChange = { isNightMode = it }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            Text(
-                text = if (isNightMode) "자러 갈까요?" else "일어날 시간이에요!",
-                fontSize = 24.sp,
-                color = Color.DarkGray,
-                fontWeight = FontWeight.SemiBold
-            )
-
-            // ⏰ 시간 선택기
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("몇 분 동안 차단할까요?", color = Color.DarkGray)
-                Spacer(Modifier.height(8.dp))
-                MinutePicker(
-                    selectedMinute = selectedMinute,
-                    onMinuteChanged = { selectedMinute = it }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // 💤 시작 버튼
-            Button(
-                onClick = { /* 시작 로직 */ },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Purple40,
-                    contentColor = Color.Black
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-            ) {
-                Text(text = if (isNightMode) "누우러 가기 💤" else "일어나기 ☀️", fontSize = 20.sp)
+        setContent {
+            MakeYourMorningTheme {
+                TimeScreen()
             }
         }
     }
 }
+
+// Preview용 위젯
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TimeScreen(
+//    popBack: () -> Unit,
+//    viewModel: AlarmTimeViewModel,
+//    id: String?,
+//    isSleep: Boolean
+) {
+    val context = LocalContext.current
+    val scheduler = AlarmScheduler(context)
+
+    val currentTime = LocalDateTime.now()
+    var hourText by remember { mutableStateOf(currentTime.hour.toString().padStart(2, '0')) }
+    var minuteText by remember { mutableStateOf(currentTime.minute.toString().padStart(2, '0')) }
+
+
+
+
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val buttonSize = screenWidth / 9
+
+    val itemState = remember { mutableStateOf<AlarmTime?>(null) }
+
+    val selectedDays = remember { mutableStateListOf<Int>() }
+
+//    LaunchedEffect(id) {
+//        if (id != null) {
+//            val item = viewModel.getOne(id)
+//            itemState.value = item
+//            timePickerState.apply {
+//                hour = item.hour
+//                minute = item.minute
+//            }
+//            selectedDays.addAll(item.daysOfWeek)
+//        }
+//    }
+
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("") },
+                navigationIcon = {
+                    IconButton(onClick = {}){// popBack) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back button"
+                        )
+                    }
+                }
+
+            )
+        }
+    ) { paddingValue ->
+        CustomColumn(
+            paddingValues = paddingValue
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+//                daysOfWeek.forEachIndexed { index, day ->
+//                    val dayNum = daysOfWeekNum[index]
+//                    val isSelected = selectedDays.contains(dayNum)
+//
+//                    OutlinedButton(
+//                        onClick = {
+//                            if (isSelected) {
+//                                selectedDays.remove(dayNum)
+//                            } else {
+//                                selectedDays.add(dayNum)
+//                            }
+//                        },
+//                        modifier = Modifier.size(buttonSize),
+//                        shape = CircleShape,
+//                        contentPadding = PaddingValues(0.dp),
+//                        colors = ButtonColors(
+//                            containerColor = if (isSelected) Yellow60 else Yellow80,
+//                            contentColor = if (isSelected) Color.Black else Color.Gray,
+//                            disabledContainerColor = Color.DarkGray,
+//                            disabledContentColor = Color.White
+//                        ),
+//                        border = BorderStroke(1.dp, color = Yellow40)
+//                    ) {
+//                        Text(
+//                            text = day,
+//                            fontSize = 20.sp,
+//                            textAlign = TextAlign.Center,
+//                            modifier = Modifier
+//                                .fillMaxSize()
+//                                .wrapContentSize(Alignment.Center)
+//                        )
+//                    }
+//                }
+//            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+
+
+            TextButton(
+                onClick = {
+
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Yellow60,
+                    contentColor = Yellow10
+                ),
+                shape = CircleShape
+            ) {
+                Text(
+                    "시간 추가 "
+                )
+            }
+        }
+    }
+}}

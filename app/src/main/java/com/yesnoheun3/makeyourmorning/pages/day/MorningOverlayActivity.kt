@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.yesnoheun3.makeyourmorning.common.compose.CustomOverlayScreen
+import com.yesnoheun3.makeyourmorning.ui.theme.MakeYourMorningTheme
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow60
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow80
 
@@ -12,11 +13,13 @@ class MorningOverlayActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            CustomOverlayScreen(
-                onDismiss = { finish() },
-                backgroundColor = Yellow80,
-                buttonColor = Yellow60
-            )
+            MakeYourMorningTheme {
+                CustomOverlayScreen(
+                    onDismiss = { finish() },
+                    backgroundColor = Yellow80,
+                    buttonColor = Yellow60
+                )
+            }
         }
     }
 }

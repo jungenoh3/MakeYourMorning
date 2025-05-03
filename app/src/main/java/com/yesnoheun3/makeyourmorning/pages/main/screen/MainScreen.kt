@@ -10,6 +10,7 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +18,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,7 +52,7 @@ fun MainScreen(rootNavController: NavHostController, viewModel: AlarmTimeViewMod
             BottomNavigation(
                 modifier = Modifier
                     .height(70.dp),
-                backgroundColor = Color.White,
+                backgroundColor = MaterialTheme.colorScheme.surfaceBright,
             ) {
                 items.forEach { item ->
                     BottomNavigationItem(
@@ -69,8 +72,8 @@ fun MainScreen(rootNavController: NavHostController, viewModel: AlarmTimeViewMod
                         },
                         icon = {
                             Icon(
-                                imageVector = item.icon,
-                                contentDescription = "Navigation button",
+                                imageVector = ImageVector.vectorResource(item.icon),
+                                contentDescription = "Navigation button to ${item.screenRoute}",
                                 modifier = Modifier.padding(6.dp)
                             )
                         },
@@ -81,8 +84,8 @@ fun MainScreen(rootNavController: NavHostController, viewModel: AlarmTimeViewMod
                                 fontSize = 12.sp
                             )
                         },
-                        selectedContentColor = Yellow40,
-                        unselectedContentColor = Color.DarkGray
+                        selectedContentColor = MaterialTheme.colorScheme.primary,
+                        unselectedContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
                 }
             }

@@ -14,17 +14,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.FloatingActionButton
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Icon
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -40,14 +40,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.yesnoheun3.makeyourmorning.common.compose.CustomColumn
+import com.yesnoheun3.makeyourmorning.common.compose.CustomDivider
 import com.yesnoheun3.makeyourmorning.pages.time.compose.SwipeToDeleteContainer
 import com.yesnoheun3.makeyourmorning.pages.time.compose.TimeCard
 import com.yesnoheun3.makeyourmorning.utilities.alarm.AlarmScheduler
 import com.yesnoheun3.makeyourmorning.common.data.AlarmTime
 import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTimeViewModel
-import com.yesnoheun3.makeyourmorning.ui.theme.Yellow40
-import com.yesnoheun3.makeyourmorning.ui.theme.Yellow60
-import com.yesnoheun3.makeyourmorning.ui.theme.Yellow80
 import kotlinx.coroutines.launch
 
 @Composable
@@ -63,73 +61,30 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
 
     val item = viewModel.items.collectAsState()
 
-    Scaffold (
+    Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("취침 시간") },
+                title = { Text("취침 시간 설정") },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Yellow80,
-                    titleContentColor = Color.Black
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navController.navigate("addTime?isSleep=${isSleep}") },
-                backgroundColor = Yellow60
+                backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             ) {
                 Icon(Icons.Rounded.Add, "Add alarm")
             }
         },
         floatingActionButtonPosition = FabPosition.Center
     ) { innerPadding ->
-        CustomColumn (paddingValues = innerPadding) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Yellow80)
-                    .padding(50.dp),
-                contentAlignment = Alignment.Center,
-            ){
-                Text("현재 시간", fontSize = 50.sp)
-            }
-            Divider(modifier = Modifier.fillMaxWidth(),
-                thickness = 1.dp,
-                color = Yellow40
-                )
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                typeList.forEachIndexed { index, title ->
-                    Box(
-                        modifier = Modifier.
-                        fillMaxWidth()
-                            .weight(0.5f)
-                            .clickable{
-                                    coroutineScope.launch {
-                                        pageState.animateScrollToPage(index)
-                                    }
-                            }
-                            .background(if (pageState.targetPage == index) {Yellow80} else {Color.White} ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = title,
-                            modifier = Modifier
-                                .padding(16.dp),
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-
-            }
-            Divider(modifier = Modifier.fillMaxWidth(),
-                thickness = 1.dp,
-                color = Yellow40
-            )
+        CustomColumn(paddingValues = innerPadding) {
             HorizontalPager(
                 state = pageState
             ) { page ->
@@ -149,10 +104,13 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
                             onDelete = {
                                 viewModel.deleteItem(instanceItem[index])
                             },
-                            onClick = { navController.navigate("addTime?id=${instanceItem[index].id}") }
                         ) {
                             TimeCard(
                                 instanceItem[index],
+                                onClick = {
+                                    System.out.println("Card selected: ${index}")
+                                    navController.navigate("addTime?id=${instanceItem[index].id}")
+                                          },
                                 onCheckedChanged = { isChecked ->
                                     viewModel.updateIsOn(instanceItem[index].id, isChecked)
                                     if (isChecked) {
@@ -163,10 +121,6 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
                                 },
                             )
                         }
-                        Divider(
-                            color = Color.LightGray,
-                            thickness = 1.dp
-                        )
                     }
                 }
             }

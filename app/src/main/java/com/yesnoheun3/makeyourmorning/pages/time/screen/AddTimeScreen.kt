@@ -1,33 +1,27 @@
 package com.yesnoheun3.makeyourmorning.pages.time.screen
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
-import androidx.compose.material3.TimePickerColors
+import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
@@ -37,27 +31,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
-import androidx.compose.ui.unit.sp
 import com.yesnoheun3.makeyourmorning.common.compose.CustomColumn
 import com.yesnoheun3.makeyourmorning.common.data.AlarmTime
+import com.yesnoheun3.makeyourmorning.pages.time.compose.CustomDaysPicker
 import com.yesnoheun3.makeyourmorning.utilities.alarm.AlarmScheduler
 import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTimeViewModel
-import com.yesnoheun3.makeyourmorning.ui.theme.Yellow10
-import com.yesnoheun3.makeyourmorning.ui.theme.Yellow100
-import com.yesnoheun3.makeyourmorning.ui.theme.Yellow40
-import com.yesnoheun3.makeyourmorning.ui.theme.Yellow60
-import com.yesnoheun3.makeyourmorning.ui.theme.Yellow80
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.Calendar
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,18 +55,14 @@ fun AddTimeScreen(
     val context = LocalContext.current
     val scheduler = AlarmScheduler(context)
 
-    val daysOfWeekNum = listOf<Int>(2, 3, 4, 5, 6, 7, 1)
-    val daysOfWeek = listOf<String>("월", "화", "수", "목", "금", "토", "일")
-
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val buttonSize = screenWidth / 9
 
-    val currentTime = Calendar.getInstance()
-
+    val currentTime = LocalDateTime.now()
     val itemState = remember { mutableStateOf<AlarmTime?>(null) }
     val timePickerState = rememberTimePickerState(
-        initialHour = currentTime.get(Calendar.HOUR_OF_DAY),
-        initialMinute = currentTime.get(Calendar.MINUTE),
+        initialHour = currentTime.hour,
+        initialMinute = currentTime.minute,
         is24Hour = false
     )
     val selectedDays = remember { mutableStateListOf<Int>() }
@@ -101,7 +82,7 @@ fun AddTimeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("") },
+                title = {},
                 navigationIcon = {
                     IconButton(onClick = popBack) {
                         Icon(
@@ -114,69 +95,37 @@ fun AddTimeScreen(
             )
         }
     ) { paddingValue ->
-        CustomColumn(
-            paddingValues = paddingValue
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValue),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                daysOfWeek.forEachIndexed { index, day ->
-                    val dayNum = daysOfWeekNum[index]
-                    val isSelected = selectedDays.contains(dayNum)
 
-                    OutlinedButton(
-                        onClick = {
-                            if (isSelected) {
-                                selectedDays.remove(dayNum)
-                            } else {
-                                selectedDays.add(dayNum)
-                            }
-                        },
-                        modifier = Modifier.size(buttonSize),
-                        shape = CircleShape,
-                        contentPadding = PaddingValues(0.dp),
-                        colors = ButtonColors(
-                            containerColor = if (isSelected) Yellow60 else Yellow80,
-                            contentColor = if (isSelected) Color.Black else Color.Gray,
-                            disabledContainerColor = Color.DarkGray,
-                            disabledContentColor = Color.White
-                        ),
-                        border = BorderStroke(1.dp, color = Yellow40)
-                    ) {
-                        Text(
-                            text = day,
-                            fontSize = 20.sp,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .wrapContentSize(Alignment.Center)
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            TimePicker(
-                state = timePickerState,
-                colors = TimePickerColors(
-                    clockDialColor = Yellow100,
-                    selectorColor = Yellow60,
-                    containerColor = Color.White,
-                    periodSelectorBorderColor = Color.Transparent,
-                    clockDialSelectedContentColor = Yellow10,
-                    clockDialUnselectedContentColor = Color.Gray,
-                    periodSelectorSelectedContainerColor = Yellow60,
-                    periodSelectorUnselectedContainerColor = Yellow100,
-                    periodSelectorSelectedContentColor = Yellow10,
-                    periodSelectorUnselectedContentColor = Color.Gray,
-                    timeSelectorSelectedContainerColor = Yellow60,
-                    timeSelectorUnselectedContainerColor = Yellow100,
-                    timeSelectorSelectedContentColor = Yellow10,
-                    timeSelectorUnselectedContentColor = Color.Gray
+            Column (
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(35.dp)
+            ){
+                CustomDaysPicker(
+                    selectedDays= selectedDays,
+                    onToggleDay = { day ->
+                        if (selectedDays.contains(day)) selectedDays.remove(day)
+                        else selectedDays.add(day)
+                    },
+                    buttonSize = buttonSize
                 )
-            )
+
+                TimePicker(
+                    state = timePickerState,
+                    colors = TimePickerDefaults.colors(
+                        periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+                        periodSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        periodSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+                        periodSelectorUnselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                )
+            }
 
             TextButton(
                 onClick = {
@@ -201,7 +150,6 @@ fun AddTimeScreen(
                                 daysOfWeek = selectedDays.sorted(),
                                 isSleep = isSleep
                             )
-                            //                        delay(200)
                             //                        val lastItem = viewModel.items.value?.lastOrNull()
                             //                        if (lastItem != null) {
                             //                            scheduler.scheduleAlarm(lastItem)
@@ -210,11 +158,11 @@ fun AddTimeScreen(
                     }
                     popBack()
                 },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Yellow60,
-                    contentColor = Yellow10
-                ),
-                shape = CircleShape
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 15.dp),
+                colors = ButtonDefaults.buttonColors(),
+                shape = RoundedCornerShape(15.dp)
             ) {
                 Text(
                     text = if (id != null) {

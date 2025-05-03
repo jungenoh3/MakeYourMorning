@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.DismissDirection
 //noinspection UsingMaterialAndMaterial3Libraries
@@ -22,6 +23,7 @@ import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Icon
+import androidx.compose.material.Surface
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.SwipeToDismiss
 //noinspection UsingMaterialAndMaterial3Libraries
@@ -34,6 +36,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.rememberDismissState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,11 +46,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yesnoheun3.makeyourmorning.common.data.AlarmTime
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow40
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow60
+import com.yesnoheun3.makeyourmorning.ui.theme.primaryLight
+import com.yesnoheun3.makeyourmorning.ui.theme.secondaryLight
 import kotlinx.coroutines.delay
 import java.util.Locale
 
@@ -74,7 +80,6 @@ fun <T> SwipeToDeleteContainer(
     item: T,
     onDelete: (T) -> Unit,
     animateDuration: Int = 500,
-    onClick: () -> Unit,
     content: @Composable (T) -> Unit
 ){
     var isRemoved by remember {
@@ -107,8 +112,10 @@ fun <T> SwipeToDeleteContainer(
     ) {
         SwipeToDismiss(
             state = state,
-            background = { DeleteBackground(swipeDismissState = state, onClick = onClick) },
-            dismissContent = { content(item) },
+            background = { DeleteBackground(swipeDismissState = state, onClick = {})},
+            dismissContent = {
+                content(item)
+            },
             directions = setOf(DismissDirection.EndToStart)
         )
     }
@@ -118,7 +125,7 @@ fun <T> SwipeToDeleteContainer(
 @Composable
 fun DeleteBackground( swipeDismissState: DismissState, onClick: () -> Unit) {
     val color = when (swipeDismissState.dismissDirection) {
-        DismissDirection.EndToStart -> Color.Red
+        DismissDirection.EndToStart -> MaterialTheme.colorScheme.errorContainer
         DismissDirection.StartToEnd -> Color.Transparent
         null -> Color.Transparent
     }
@@ -126,57 +133,63 @@ fun DeleteBackground( swipeDismissState: DismissState, onClick: () -> Unit) {
     Box (
         modifier = Modifier
             .fillMaxSize()
+            .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable(
                 enabled = true,
                 onClick = onClick
             )
-            .background(color)
-            .padding(16.dp),
+            .background(color, shape = RoundedCornerShape(16.dp)),
         contentAlignment = Alignment.CenterEnd
     ) {
         Icon(
             imageVector = Icons.Default.Delete,
             contentDescription = null,
-            tint = Color.White
+            modifier = Modifier.padding(end = 18.dp),
+            tint = MaterialTheme.colorScheme.onErrorContainer
         )
     }
 
 }
 
 @Composable
-fun TimeCard(data: AlarmTime, onCheckedChanged: (Boolean) -> Unit) {
-    Row(
+fun TimeCard(data: AlarmTime, onCheckedChanged: (Boolean) -> Unit, onClick: () -> Unit) {
+    Surface (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 15.dp, horizontal = 20.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .clickable { onClick() }
+        ,
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant
+    ){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 15.dp, horizontal = 20.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                String.format(
-                    Locale.KOREA, "%02d : %02d",
-                    data.hour,
-                    data.minute
-                ),
-                fontSize = 20.sp
-            )
-            Text(
-                stringDaysOfWeek(data.daysOfWeek),
-                fontSize = 15.sp
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    String.format(
+                        Locale.KOREA, "%02d : %02d",
+                        data.hour,
+                        data.minute
+                    ),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    stringDaysOfWeek(data.daysOfWeek),
+                    fontSize = 15.sp
+                )
+            }
+            Switch(
+                checked = data.isOn,
+                onCheckedChange = onCheckedChanged,
             )
         }
-        Switch(
-            checked = data.isOn,
-            onCheckedChange = onCheckedChanged,
-            colors = SwitchDefaults.colors(
-                checkedTrackColor = Yellow60,
-                checkedThumbColor = Yellow40,
-                uncheckedThumbColor = Color.DarkGray,
-                uncheckedTrackColor = Color.Gray
-            )
-        )
     }
 }

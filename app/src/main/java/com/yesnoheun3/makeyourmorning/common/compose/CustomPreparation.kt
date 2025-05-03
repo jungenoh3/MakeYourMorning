@@ -175,9 +175,9 @@ fun CustomPreparation(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text("몇 분 동안 차단할까요?", color = Color.DarkGray)
                 Spacer(Modifier.height(8.dp))
-                MinutePicker(
-                    selectedMinute = selectedMinute,
-                    onMinuteChanged = { selectedMinute = it }
+                NumberPicker(
+                    selectedNum = selectedMinute,
+                    onNumberChange = { selectedMinute = it }
                 )
             }
 
