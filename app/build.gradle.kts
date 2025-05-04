@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.yesnoheun3.makeyourmorning"
+    namespace = "com.nochunsam.makeyourmorning"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.yesnoheun3.makeyourmorning"
+        applicationId = "com.nochunsam.makeyourmorning"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
