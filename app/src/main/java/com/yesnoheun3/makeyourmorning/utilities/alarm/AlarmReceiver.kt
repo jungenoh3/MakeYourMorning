@@ -41,6 +41,7 @@ class AlarmReceiver: BroadcastReceiver() {
     }
 
     fun fireAlarm(context: Context, intent: Intent) {
+        FocusBlockingManager.setBlockTypeNight()
         val activityIntent = Intent(context, DayManagerActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }

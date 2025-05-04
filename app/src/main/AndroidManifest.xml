@@ -49,7 +49,7 @@
         </activity>
 
         <activity
-            android:name=".pages.day.MorningOverlayActivity"
+            android:name=".pages.day.OverlayActivity"
             android:exported="false"
             android:showOnLockScreen="false"
             android:turnScreenOn="true"

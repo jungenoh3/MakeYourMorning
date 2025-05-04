@@ -46,16 +46,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.yesnoheun3.makeyourmorning.common.data.BlockTime
 import com.yesnoheun3.makeyourmorning.common.data.BlockType
-import com.yesnoheun3.makeyourmorning.ui.theme.Purple40
-import com.yesnoheun3.makeyourmorning.ui.theme.PurpleGrey80
-import com.yesnoheun3.makeyourmorning.ui.theme.Yellow60
-import com.yesnoheun3.makeyourmorning.ui.theme.Yellow80
-import com.yesnoheun3.makeyourmorning.ui.theme.inversePrimaryLightMediumContrast
-import com.yesnoheun3.makeyourmorning.ui.theme.onSecondaryContainerLightMediumContrast
-import com.yesnoheun3.makeyourmorning.ui.theme.onTertiaryDarkHighContrast
-import com.yesnoheun3.makeyourmorning.ui.theme.secondaryContainerLightMediumContrast
-import com.yesnoheun3.makeyourmorning.ui.theme.secondaryLightMediumContrast
-import com.yesnoheun3.makeyourmorning.ui.theme.tertiaryDarkHighContrast
 import com.yesnoheun3.makeyourmorning.ui.theme.tertiaryDeepDarkHighContrast
 import com.yesnoheun3.makeyourmorning.utilities.accessibility.AccessibilityServiceChecker
 import com.yesnoheun3.makeyourmorning.utilities.accessibility.AppBlockAccessibilityService
@@ -66,7 +56,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-
 
 @Composable
 fun CustomPreparation(
@@ -106,15 +95,14 @@ fun CustomPreparation(
     )
 
 
-    Column(
+    Box (
         modifier = Modifier
             .fillMaxSize()
             .background(color = backgroundColor)
-            .padding(16.dp),
-        verticalArrangement = Arrangement.SpaceAround,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(30.dp),
     ) {
         Column (
+            modifier = Modifier.align(Alignment.TopCenter),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -151,48 +139,52 @@ fun CustomPreparation(
             )
         }
 
-
-        ClockText(color = textColor)
-
-
-        Column(
+        Column (
+            modifier = Modifier.align(Alignment.Center),
+            verticalArrangement = Arrangement.SpaceAround,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Crossfade(targetState = blockType) { type ->
-                    Text(
-                        text = if (type == BlockType.NIGHT) "자러 갈까요?" else "좋은 아침이에요!",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = textColor,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                }
-            }
-            Text("이 시간 동안 휴대폰을 멀리하세요!", color = textColor)
-        }
+            ClockText(color = textColor)
 
-        NumberPicker(
-            selectedNum = selectedMinute,
-            onNumberChange = { selectedMinute = it },
-            color = textColor
-        )
+            Column (
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Crossfade(targetState = blockType) { type ->
+                        Text(
+                            text = if (type == BlockType.NIGHT) "자러 갈까요?" else "좋은 아침이에요!",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = textColor,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+                    }
+                }
+                Text("이 시간 동안 휴대폰을 멀리하세요!", color = textColor)
+            }
+
+            NumberPicker(
+                selectedNum = selectedMinute,
+                onNumberChange = { selectedMinute = it },
+                color = textColor
+            )
+        }
 
         Button(
             onClick = {
-//                    blockTimeId.value = LocalDateTime.now()
-//                    val item = BlockTime(
-//                        id = blockTimeId.value.toString(),
-//                        minute = selectedMinute,
-//                        type = blockType
-//                    )
-//                    scheduler.scheduleBlock(item)
+                    blockTimeId.value = LocalDateTime.now()
+                    val item = BlockTime(
+                        id = blockTimeId.value.toString(),
+                        minute = selectedMinute,
+                        type = blockType
+                    )
+                    scheduler.scheduleBlock(item)
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = buttonColor,
@@ -200,6 +192,7 @@ fun CustomPreparation(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
+                .align(Alignment.BottomCenter)
         ) {
             Box(
                 modifier = Modifier
@@ -244,12 +237,6 @@ fun CustomSwitch(
         Switch(
             checked = value,
             onCheckedChange = { onCheckedChange() },
-//            colors = SwitchDefaults.colors(
-//                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
-//                checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
-//                uncheckedTrackColor = tertiaryDeepDarkHighContrast,
-//                uncheckedThumbColor = MaterialTheme.colorScheme.onTertiaryContainer
-//            )
         )
     }
 }

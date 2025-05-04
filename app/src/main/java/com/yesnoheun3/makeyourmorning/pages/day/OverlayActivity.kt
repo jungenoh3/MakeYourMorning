@@ -3,21 +3,23 @@ package com.yesnoheun3.makeyourmorning.pages.day
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.yesnoheun3.makeyourmorning.common.compose.CustomOverlayScreen
+import androidx.compose.runtime.collectAsState
+import com.yesnoheun3.makeyourmorning.common.compose.CustomOngoing
 import com.yesnoheun3.makeyourmorning.ui.theme.MakeYourMorningTheme
-import com.yesnoheun3.makeyourmorning.ui.theme.Yellow60
-import com.yesnoheun3.makeyourmorning.ui.theme.Yellow80
+import com.yesnoheun3.makeyourmorning.utilities.accessibility.FocusBlockingManager
 
-class MorningOverlayActivity : ComponentActivity() {
+class OverlayActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             MakeYourMorningTheme {
-                CustomOverlayScreen(
+                val type = FocusBlockingManager.blockType.collectAsState()
+                CustomOngoing(
+                    type = type.value,
+                    buttonText = "돌아가기",
+                    isOverlay = true,
                     onDismiss = { finish() },
-                    backgroundColor = Yellow80,
-                    buttonColor = Yellow60
                 )
             }
         }

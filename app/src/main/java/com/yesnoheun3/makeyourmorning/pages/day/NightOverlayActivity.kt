@@ -3,21 +3,22 @@ package com.yesnoheun3.makeyourmorning.pages.day
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.yesnoheun3.makeyourmorning.common.compose.CustomOverlayScreen
+import com.yesnoheun3.makeyourmorning.common.compose.CustomOngoing
+import com.yesnoheun3.makeyourmorning.common.data.BlockType
 import com.yesnoheun3.makeyourmorning.ui.theme.MakeYourMorningTheme
-import com.yesnoheun3.makeyourmorning.ui.theme.Purple40
-import com.yesnoheun3.makeyourmorning.ui.theme.PurpleGrey80
 
+// 사용 X 추후에 삭제 필요
 class NightOverlayActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             MakeYourMorningTheme {
-                CustomOverlayScreen(
+                CustomOngoing(
+                    type = BlockType.NIGHT,
+                    buttonText = "돌아가기",
+                    isOverlay = true,
                     onDismiss = { finish() },
-                    backgroundColor = PurpleGrey80,
-                    buttonColor = Purple40
                 )
             }
         }

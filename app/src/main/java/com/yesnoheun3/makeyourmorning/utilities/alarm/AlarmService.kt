@@ -13,6 +13,8 @@ import com.yesnoheun3.makeyourmorning.utilities.AppForegroundTracker
 import com.yesnoheun3.makeyourmorning.R
 import com.yesnoheun3.makeyourmorning.pages.day.NightOverlayActivity
 
+
+// 사용 X 추후에 삭제 필요
 class AlarmService: Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent == null){
