@@ -1,5 +1,6 @@
 package com.yesnoheun3.makeyourmorning.common.compose
 
+import android.content.Context
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -17,8 +18,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -35,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -46,6 +50,13 @@ import com.yesnoheun3.makeyourmorning.ui.theme.Purple40
 import com.yesnoheun3.makeyourmorning.ui.theme.PurpleGrey80
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow60
 import com.yesnoheun3.makeyourmorning.ui.theme.Yellow80
+import com.yesnoheun3.makeyourmorning.ui.theme.inversePrimaryLightMediumContrast
+import com.yesnoheun3.makeyourmorning.ui.theme.onSecondaryContainerLightMediumContrast
+import com.yesnoheun3.makeyourmorning.ui.theme.onTertiaryDarkHighContrast
+import com.yesnoheun3.makeyourmorning.ui.theme.secondaryContainerLightMediumContrast
+import com.yesnoheun3.makeyourmorning.ui.theme.secondaryLightMediumContrast
+import com.yesnoheun3.makeyourmorning.ui.theme.tertiaryDarkHighContrast
+import com.yesnoheun3.makeyourmorning.ui.theme.tertiaryDeepDarkHighContrast
 import com.yesnoheun3.makeyourmorning.utilities.accessibility.AccessibilityServiceChecker
 import com.yesnoheun3.makeyourmorning.utilities.accessibility.AppBlockAccessibilityService
 import com.yesnoheun3.makeyourmorning.utilities.accessibility.FocusBlockingManager
@@ -61,7 +72,7 @@ import java.time.format.DateTimeFormatter
 fun CustomPreparation(
     blockTimeId: MutableState<LocalDateTime>,
     scheduler: AlarmScheduler,
-    blockType: BlockType
+    blockType: BlockType = BlockType.NIGHT
 ) {
     val context = LocalContext.current
     val isAccessibilityEnabledFlow = remember { MutableStateFlow(false) }
@@ -86,144 +97,165 @@ fun CustomPreparation(
         }
     }
 
-    val backgroundColor by animateColorAsState(
-        targetValue = if (blockType == BlockType.NIGHT) PurpleGrey80 else Yellow80,
-        animationSpec = tween(500)
-    )
+    val backgroundColor = MaterialTheme.colorScheme.background
+    val textColor = MaterialTheme.colorScheme.onBackground
 
     val buttonColor by animateColorAsState(
-        targetValue = if (blockType == BlockType.NIGHT) Purple40 else Yellow60,
+        targetValue = if (blockType == BlockType.NIGHT) MaterialTheme.colorScheme.primaryContainer else tertiaryDeepDarkHighContrast,
         animationSpec = tween(400)
     )
 
-    Surface(
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundColor)
-            .padding(24.dp),
-        shape = RoundedCornerShape(16.dp),
-        tonalElevation = 8.dp
+            .background(color = backgroundColor)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.SpaceAround,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CustomColumn(
-            paddingValues = PaddingValues(18.dp)
+        Column (
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Text("앱 차단 허용 (접근성)", color = Color.DarkGray)
-                Switch(
-                    checked = isAccessibilityEnabled,
-                    onCheckedChange = {
-                        AccessibilityServiceChecker.requestAccessibilityPermissionIfNeeded(
-                            context,
-                            AppBlockAccessibilityService::class.java
-                        )
-                    }
-                )
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Crossfade(targetState = blockType) { type ->
-                    Text(
-                        text = "모드: ${if (type == BlockType.NIGHT) "취침" else "기상"}",
-                        color = Color.DarkGray
+            CustomSwitch(
+                value = isAccessibilityEnabled,
+                description = "앱 차단 허용",
+                color = textColor,
+                onCheckedChange = {
+                    AccessibilityServiceChecker.requestAccessibilityPermissionIfNeeded(
+                        context,
+                        AppBlockAccessibilityService::class.java
                     )
                 }
-                Switch(
-                    checked = blockType == BlockType.NIGHT,
-                    onCheckedChange = {
-                        if (blockType == BlockType.NIGHT) {
-                            FocusBlockingManager.setBlockTypeMorning()
-                        } else if (blockType == BlockType.MORNING) {
-                            FocusBlockingManager.setBlockTypeNight()
-                        }
+            )
+            CustomSwitch(
+                value = blockType == BlockType.NIGHT,
+                description = "",
+                color = textColor,
+                onCheckedChange = {
+                    if (blockType == BlockType.NIGHT) {
+                        FocusBlockingManager.setBlockTypeMorning()
+                    } else if (blockType == BlockType.MORNING) {
+                        FocusBlockingManager.setBlockTypeNight()
                     }
-                )
-            }
+                },
+                labelContent = { checked ->
+                    Crossfade(targetState = checked) { state ->
+                        Text(
+                            text = if (state) "취침" else "기상",
+                            color = textColor,
+                        )
+                    }
+                }
+            )
+        }
 
-            Spacer(modifier = Modifier.height(30.dp))
 
-            ClockText()
+        ClockText(color = textColor)
 
-            Spacer(modifier = Modifier.height(40.dp))
 
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                Crossfade(targetState = blockType, label = "") { type ->
+                Crossfade(targetState = blockType) { type ->
                     Text(
                         text = if (type == BlockType.NIGHT) "자러 갈까요?" else "좋은 아침이에요!",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color.DarkGray,
+                        color = textColor,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
                     )
                 }
             }
+            Text("이 시간 동안 휴대폰을 멀리하세요!", color = textColor)
+        }
 
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("몇 분 동안 차단할까요?", color = Color.DarkGray)
-                Spacer(Modifier.height(8.dp))
-                NumberPicker(
-                    selectedNum = selectedMinute,
-                    onNumberChange = { selectedMinute = it }
-                )
-            }
+        NumberPicker(
+            selectedNum = selectedMinute,
+            onNumberChange = { selectedMinute = it },
+            color = textColor
+        )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                onClick = {
-                    blockTimeId.value = LocalDateTime.now()
-                    val item = BlockTime(
-                        id = blockTimeId.value.toString(),
-                        minute = selectedMinute,
-                        type = blockType
-                    )
-                    scheduler.scheduleBlock(item)
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = buttonColor,
-                    contentColor = Color.Black
-                ),
+        Button(
+            onClick = {
+//                    blockTimeId.value = LocalDateTime.now()
+//                    val item = BlockTime(
+//                        id = blockTimeId.value.toString(),
+//                        minute = selectedMinute,
+//                        type = blockType
+//                    )
+//                    scheduler.scheduleBlock(item)
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = buttonColor,
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+        ) {
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Crossfade(targetState = blockType, label = "") { type ->
-                        Text(
-                            text = if (type == BlockType.NIGHT) "자러 갈까요?" else "좋은 아침이에요!",
-                            fontSize = 20.sp,
-                            color = Color.Black,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        )
-                    }
+                Crossfade(targetState = blockType) { type ->
+                    Text(
+                        text = if (type == BlockType.NIGHT) "자러 갈까요?" else "좋은 아침이에요!",
+                        fontSize = 20.sp,
+                        color = if (type == BlockType.NIGHT) Color.White else Color.Black,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
                 }
             }
         }
     }
+
 }
 
 @Composable
-fun ClockText() {
+fun CustomSwitch(
+    value: Boolean,
+    description: String,
+    color: Color,
+    onCheckedChange: () -> Unit,
+    labelContent: (@Composable (Boolean) -> Unit)? = null
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        if (labelContent != null) {
+            labelContent(value)
+        } else {
+            Text(description, color = color)
+        }
+        Switch(
+            checked = value,
+            onCheckedChange = { onCheckedChange() },
+//            colors = SwitchDefaults.colors(
+//                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+//                checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
+//                uncheckedTrackColor = tertiaryDeepDarkHighContrast,
+//                uncheckedThumbColor = MaterialTheme.colorScheme.onTertiaryContainer
+//            )
+        )
+    }
+}
+
+@Composable
+fun ClockText(color: Color) {
     var currentTime by remember { mutableStateOf(LocalTime.now()) }
 
     LaunchedEffect(Unit) {
@@ -233,10 +265,21 @@ fun ClockText() {
         }
     }
 
-    Text(
-        text = "현재 시간: ${currentTime.format(DateTimeFormatter.ofPattern("HH:mm"))}",
-        fontSize = 40.sp,
-        fontWeight = FontWeight.SemiBold,
-        color = Color.DarkGray
-    )
+    Column (
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "현재 시간",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = color
+        )
+        Text(
+            text = "${currentTime.format(DateTimeFormatter.ofPattern("HH:mm"))}",
+            fontSize = 60.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = color
+        )
+    }
 }

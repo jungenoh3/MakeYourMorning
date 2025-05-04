@@ -189,6 +189,10 @@ fun TimeCard(data: AlarmTime, onCheckedChanged: (Boolean) -> Unit, onClick: () -
             Switch(
                 checked = data.isOn,
                 onCheckedChange = onCheckedChanged,
+                colors = SwitchDefaults.colors(
+                    checkedTrackColor = MaterialTheme.colorScheme.secondary,
+                    checkedThumbColor = MaterialTheme.colorScheme.primary
+                )
             )
         }
     }
