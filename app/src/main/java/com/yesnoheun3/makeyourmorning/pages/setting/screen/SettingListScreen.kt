@@ -16,6 +16,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -23,7 +24,9 @@ import com.yesnoheun3.makeyourmorning.common.compose.CustomColumn
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingList(navController: NavController) {
+fun SettingList(
+    navController: NavController
+) {
     val cardList = listOf<SettingItem>(SettingItem.Tutorial, SettingItem.AllowList)
 
     Scaffold(

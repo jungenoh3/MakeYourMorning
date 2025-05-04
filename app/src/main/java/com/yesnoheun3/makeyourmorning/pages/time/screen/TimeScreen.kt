@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.FloatingActionButton
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Icon
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -36,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -49,7 +51,10 @@ import com.yesnoheun3.makeyourmorning.pages.time.data.AlarmTimeViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
+fun TimeScreen(
+    navController: NavController,
+    viewModel: AlarmTimeViewModel
+) {
     val context = LocalContext.current
     val scheduler = AlarmScheduler(context)
 
@@ -63,14 +68,9 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("취침 시간 설정") },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
+            TopAppBar(
+                title = { Text("취침 시간 설정") }
             )
         },
         floatingActionButton = {
@@ -114,9 +114,9 @@ fun TimeScreen(navController: NavController, viewModel: AlarmTimeViewModel) {
                                 onCheckedChanged = { isChecked ->
                                     viewModel.updateIsOn(instanceItem[index].id, isChecked)
                                     if (isChecked) {
-                                        // scheduler.scheduleAlarm(instanceItem[index])
+                                        scheduler.scheduleAlarm(instanceItem[index])
                                     } else {
-                                        // scheduler.cancel(instanceItem[index].id)
+                                        scheduler.cancel(instanceItem[index].id)
                                     }
                                 },
                             )
