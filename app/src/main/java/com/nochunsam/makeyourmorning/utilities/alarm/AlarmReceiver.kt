@@ -109,7 +109,7 @@ class AlarmReceiver: BroadcastReceiver() {
         )
 
         val notification = NotificationCompat.Builder(context, "make_your_morning5134")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_sleep)
             .setContentTitle("잘 시간!")
             .setContentText("잘 준비를 합시다!")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
