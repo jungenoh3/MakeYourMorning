@@ -37,17 +37,16 @@ class AlarmTimeViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun addItem(hour: Int, minute: Int, daysOfWeek: List<Int>, isSleep: Boolean){
-        viewModelScope.launch {
-            val newItem = AlarmTime(
-                hour = hour,
-                minute = minute,
-                daysOfWeek = daysOfWeek.sorted(),
-                isOn = true,
-                isSleep = isSleep
-            )
-            _repository.insertAlarmTime(newItem)
-        }
+    suspend fun addItem(hour: Int, minute: Int, daysOfWeek: List<Int>, isSleep: Boolean): AlarmTime {
+        val newItem = AlarmTime(
+            hour = hour,
+            minute = minute,
+            daysOfWeek = daysOfWeek.sorted(),
+            isOn = true,
+            isSleep = isSleep
+        )
+        _repository.insertAlarmTime(newItem)
+        return newItem
     }
 
     fun deleteItem(item: AlarmTime){

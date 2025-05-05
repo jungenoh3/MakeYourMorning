@@ -59,13 +59,13 @@ class AlarmScheduler (private val context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
-                Calendar.getInstance().timeInMillis + 5 * 1000, // nextAlarmTime!!.timeInMillis,
+                nextAlarmTime!!.timeInMillis, // Calendar.getInstance().timeInMillis + 5 * 1000,
                 pendingIntent
             )
         } else {
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
-                Calendar.getInstance().timeInMillis + 5 * 1000, // nextAlarmTime!!.timeInMillis,
+                nextAlarmTime!!.timeInMillis, // Calendar.getInstance().timeInMillis + 5 * 1000,
                 pendingIntent
             )
         }
@@ -94,18 +94,18 @@ class AlarmScheduler (private val context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
-                Calendar.getInstance().timeInMillis + 1 * 15 * 1000L, // nextAlarmTime.timeInMillis,
+                nextAlarmTime.timeInMillis, // Calendar.getInstance().timeInMillis + 1 * 15 * 1000L,
                 pendingIntent
             )
         } else {
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
-                Calendar.getInstance().timeInMillis + 1 * 15 * 1000L, // nextAlarmTime.timeInMillis,
+                nextAlarmTime.timeInMillis, // Calendar.getInstance().timeInMillis + 1 * 15 * 1000L,
                 pendingIntent
             )
         }
         val application = context.applicationContext as Application
-        FocusBlockingManager.startBlockingFor(1 * 15 * 1000L, item.type, application) // (분 * 초 * 1000L)
+        FocusBlockingManager.startBlockingFor(item.minute * 60 * 1000L, item.type, application) // (분 * 초 * 1000L)
     }
 
     fun cancel(id: String){

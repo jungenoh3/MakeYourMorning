@@ -30,14 +30,14 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".pages.day.NightOverlayActivity"
-            android:exported="false"
-            android:showOnLockScreen="false"
-            android:turnScreenOn="true"
-            android:parentActivityName=".pages.main.MainActivity"
-            android:label="Night Overlay">
-        </activity>
+<!--        <activity-->
+<!--            android:name=".pages.day.NightOverlayActivity"-->
+<!--            android:exported="false"-->
+<!--            android:showOnLockScreen="false"-->
+<!--            android:turnScreenOn="true"-->
+<!--            android:parentActivityName=".pages.main.MainActivity"-->
+<!--            android:label="Night Overlay">-->
+<!--        </activity>-->
 
         <activity
             android:name=".pages.day.DayManagerActivity"
@@ -58,10 +58,10 @@
         </activity>
 
         <receiver android:name=".utilities.alarm.AlarmReceiver" />
-        <service
-            android:name=".utilities.alarm.AlarmService"
-            android:foregroundServiceType="mediaPlayback">
-        </service>
+<!--        <service-->
+<!--            android:name=".utilities.alarm.AlarmService"-->
+<!--            android:foregroundServiceType="mediaPlayback">-->
+<!--        </service>-->
 
         <service android:name=".utilities.accessibility.AppBlockAccessibilityService"
             android:exported="true"

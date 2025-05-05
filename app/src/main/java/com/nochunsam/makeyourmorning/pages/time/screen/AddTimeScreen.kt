@@ -132,23 +132,19 @@ fun AddTimeScreen(
                                 minute = timePickerState.minute,
                                 daysOfWeek = selectedDays.sorted(),
                             )
-                            //                        if (item!!.isOn) {
-                            //                            scheduler.cancel(item.id)
-                            //                            viewModel.getOne(id) { item ->
-                            //                                scheduler.scheduleAlarm(item)
-                            //                            }
-                            //                        }
+                            if (itemState.value!!.isOn) {
+                                scheduler.cancel(itemState.value!!.id)
+                                val item = viewModel.getOne(id)
+                                scheduler.scheduleAlarm(item)
+                            }
                         } else { // 추가할 때는 스케쥴/
-                            viewModel.addItem(
+                            val lastItem =  viewModel.addItem(
                                 hour = timePickerState.hour,
                                 minute = timePickerState.minute,
                                 daysOfWeek = selectedDays.sorted(),
                                 isSleep = isSleep
                             )
-                            //                        val lastItem = viewModel.items.value?.lastOrNull()
-                            //                        if (lastItem != null) {
-                            //                            scheduler.scheduleAlarm(lastItem)
-                            //                        }
+                            scheduler.scheduleAlarm(lastItem)
                         }
                     }
                     popBack()

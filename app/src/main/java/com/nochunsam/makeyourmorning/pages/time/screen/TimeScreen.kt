@@ -44,7 +44,6 @@ fun TimeScreen(
     val scrollState = rememberLazyListState()
     val typeList = listOf<String>("취침 시간") // , "기상 시간")
     val pageState = rememberPagerState(initialPage = 0, pageCount = { typeList.size })
-    val coroutineScope = rememberCoroutineScope()
     val isSleep = pageState.currentPage == 0
 
     val item = viewModel.items.collectAsState()
@@ -85,6 +84,7 @@ fun TimeScreen(
                         SwipeToDeleteContainer<AlarmTime>(
                             item = instanceItem[index],
                             onDelete = {
+                                scheduler.cancel(instanceItem[index].id)
                                 viewModel.deleteItem(instanceItem[index])
                             },
                         ) {

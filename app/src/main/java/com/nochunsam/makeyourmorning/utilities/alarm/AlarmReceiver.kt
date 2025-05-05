@@ -1,6 +1,7 @@
 package com.nochunsam.makeyourmorning.utilities.alarm
 
 import android.Manifest
+import android.app.Application
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -17,6 +18,10 @@ import com.nochunsam.makeyourmorning.common.data.TimeType
 import com.nochunsam.makeyourmorning.pages.day.DayManagerActivity
 import com.nochunsam.makeyourmorning.utilities.AppForegroundTracker
 import com.nochunsam.makeyourmorning.utilities.accessibility.FocusBlockingManager
+import com.nochunsam.makeyourmorning.utilities.database.AppRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class AlarmReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -27,7 +32,7 @@ class AlarmReceiver: BroadcastReceiver() {
         System.out.println("알림을 받았습니다.")
 
         val ordinal = intent.getIntExtra("com.nochunsam.makeyourmorning.type", -1)
-        val timeType = if (ordinal != -1) TimeType.values()[ordinal] else null
+        val timeType = if (ordinal != -1) TimeType.entries[ordinal] else null
 
         if (timeType == null){
             return
@@ -51,7 +56,7 @@ class AlarmReceiver: BroadcastReceiver() {
 
     fun manageBlock(context: Context, intent: Intent) {
         val blockOrdinal = intent.getIntExtra("com.nochunsam.makeyourmorning.blockType", -1)
-        val blockType = if (blockOrdinal != -1) BlockType.values()[blockOrdinal] else null
+        val blockType = if (blockOrdinal != -1) BlockType.entries[blockOrdinal] else null
         if (blockType == null){
             return
         }
@@ -82,13 +87,18 @@ class AlarmReceiver: BroadcastReceiver() {
 
     fun setNextAlarm(intent: Intent, context: Context){
         val daysOfWeek = intent.getIntArrayExtra("com.nochunsam.makeyourmorning.DaysOfWeek")?.toList() ?: listOf()
+        val id = intent.getStringExtra("com.nochunsam.makeyourmorning.Id")
+
         if (daysOfWeek.isEmpty()){
-            // 여기에 해당 알림을 종료하기 -> isOn을 끄기
+            CoroutineScope(Dispatchers.IO).launch {
+                val repo = AppRepository(application = context.applicationContext as Application)
+                repo.updateIsOn(id.toString(), false)
+            }
             return
         }
         val hour = intent.getIntExtra("com.nochunsam.makeyourmorning.Hour", 0)
         val minute = intent.getIntExtra("com.nochunsam.makeyourmorning.Minute", 0)
-        val id = intent.getStringExtra("com.nochunsam.makeyourmorning.Id")
+
 
         val item = AlarmTime(
             id = id.toString(),
