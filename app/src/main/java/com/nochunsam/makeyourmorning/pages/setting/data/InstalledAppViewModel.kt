@@ -13,22 +13,22 @@ class InstalledAppViewModel(application: Application): AndroidViewModel(applicat
     private val _repository = AppRepository(application)
 
     val items: StateFlow<List<String>> = _repository
-        .getAllInstalledApp()
+        .getAllAllowedApp()
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             emptyList()
         )
 
-    fun addItem(item: InstalledApp){
+    fun addItem(item: AllowedApp){
         viewModelScope.launch {
-            _repository.insertInstallApp(item)
+            _repository.insertAllowedApp(item)
         }
     }
 
-    fun deleteItem(item: InstalledApp){
+    fun deleteItem(item: AllowedApp){
         viewModelScope.launch {
-            _repository.deleteInstallApp(item)
+            _repository.deleteAllowedApp(item)
         }
     }
 }

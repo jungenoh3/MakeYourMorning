@@ -2,15 +2,15 @@ package com.nochunsam.makeyourmorning.utilities.database
 
 import android.app.Application
 import com.nochunsam.makeyourmorning.common.data.AlarmTime
-import com.nochunsam.makeyourmorning.pages.setting.data.InstalledApp
+import com.nochunsam.makeyourmorning.pages.setting.data.AllowedApp
 import com.nochunsam.makeyourmorning.utilities.database.dao.AlarmTimeDao
-import com.nochunsam.makeyourmorning.utilities.database.dao.InstalledAppDao
+import com.nochunsam.makeyourmorning.utilities.database.dao.AllowedAppDao
 import kotlinx.coroutines.flow.Flow
 
 class AppRepository(application: Application) {
     private val appDatabase = AppDatabase.getInstance(application)!!
     private val alarmTimeDao: AlarmTimeDao = appDatabase.alarmTimeDao()
-    private val installedAppDao: InstalledAppDao = appDatabase.installedAppDao()
+    private val allowedAppDao: AllowedAppDao = appDatabase.allowedAppDao()
 
     fun getAllAlarmTime(): Flow<List<AlarmTime>> = alarmTimeDao.getAll()
 
@@ -25,7 +25,7 @@ class AppRepository(application: Application) {
 
     suspend fun updateIsOn(id: String, isOn: Boolean) = alarmTimeDao.updateIsOn(id, isOn)
 
-    fun getAllInstalledApp(): Flow<List<String>> = installedAppDao.getAll()
-    suspend fun insertInstallApp(item: InstalledApp) = installedAppDao.insertOne(item)
-    suspend fun deleteInstallApp(item: InstalledApp) = installedAppDao.delete(item)
+    fun getAllAllowedApp(): Flow<List<String>> = allowedAppDao.getAll()
+    suspend fun insertAllowedApp(item: AllowedApp) = allowedAppDao.insertOne(item)
+    suspend fun deleteAllowedApp(item: AllowedApp) = allowedAppDao.delete(item)
 }

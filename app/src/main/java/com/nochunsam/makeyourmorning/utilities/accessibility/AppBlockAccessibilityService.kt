@@ -29,7 +29,8 @@ class AppBlockAccessibilityService : AccessibilityService() {
         }
 
         val packageName = event.packageName?.toString() ?: return
-        if (packageName !in FocusBlockingManager.allowedAppList) {
+        if (packageName in FocusBlockingManager.blockAppList){
+            Log.d("BlockService", "BlockList ${FocusBlockingManager.blockAppList}")
             Log.d("BlockService", "Blocking $packageName")
             returnToHomeScreen()
             showBlockingScreen()

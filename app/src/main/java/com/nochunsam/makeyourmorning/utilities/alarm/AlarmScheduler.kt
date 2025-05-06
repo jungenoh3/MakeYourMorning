@@ -105,7 +105,10 @@ class AlarmScheduler (private val context: Context) {
             )
         }
         val application = context.applicationContext as Application
-        FocusBlockingManager.startBlockingFor(item.minute * 60 * 1000L, item.type, application) // (분 * 초 * 1000L)
+        FocusBlockingManager.startBlockingFor(
+            item.minute * 60 * 1000L,
+            item.type, application
+        ) // (분 * 초 * 1000L)
     }
 
     fun cancel(id: String){

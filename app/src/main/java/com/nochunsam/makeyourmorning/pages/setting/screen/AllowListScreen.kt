@@ -1,7 +1,5 @@
 package com.nochunsam.makeyourmorning.pages.setting.screen
 
-import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -26,38 +24,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.nochunsam.makeyourmorning.pages.setting.data.InstalledApp
+import com.nochunsam.makeyourmorning.pages.setting.data.AllowedApp
 import com.nochunsam.makeyourmorning.pages.setting.data.InstalledAppViewModel
-
-fun getInstalledApps(context: Context): List<InstalledApp> {
-    val pm = context.packageManager
-
-    val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
-    val resolveInfos = pm.queryIntentActivities(intent, 0)
-
-    return resolveInfos
-        .filter { it.activityInfo.packageName != "com.nochunsam.makeyourmorning" }
-        .map {
-        val appName = it.loadLabel(pm).toString()
-        val packageName = it.activityInfo.packageName
-
-        InstalledApp(
-            appName = appName,
-            packageName = packageName
-        )
-    }.sortedBy { it.appName.lowercase() }
-}
+import com.nochunsam.makeyourmorning.utilities.accessibility.FocusBlockingManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AllowListScreen() {
     val context = LocalContext.current
-    val items = remember { mutableStateListOf<InstalledApp>() }
+    val items = remember { mutableStateListOf<AllowedApp>() }
     val viewModel: InstalledAppViewModel = viewModel()
     val allowedList = viewModel.items.collectAsState()
 
     LaunchedEffect(Unit) {
-        val installedApps = getInstalledApps(context)
+        val installedApps = FocusBlockingManager.getInstalledApps(context)
         items.clear()
         items.addAll(installedApps)
     }

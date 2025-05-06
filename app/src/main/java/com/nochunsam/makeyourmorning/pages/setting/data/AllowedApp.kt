@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity()
-data class InstalledApp(
+data class AllowedApp(
     @PrimaryKey() val packageName: String,
     val appName: String
 )
