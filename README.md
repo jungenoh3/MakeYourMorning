@@ -1,9 +1,7 @@
 # MakeYourMorning
 
-## 메뉴바 만드는 데 참고
-- https://velog.io/@chuu1019/Android-Jetpack-Compose-Bottom-Navigation-%EB%A7%8C%EB%93%A4%EA%B8%B0
-- (굳이 BottomNavItem 말고 Column으로 커스텀 할 수 있다는 내용) https://stackoverflow.com/questions/73003424/adding-spacing-between-bottomnavigationitems-icon-label
+개인적으로 진행한 프로젝트였으나... 똑같은 아이디어의 앱이 이미 있어서 중지했습니다.
 
-### UI 변경
-- bottomNavigation 아이콘 변경
-- 시간 설정 TimePicker이 아니라 다른 위젯으로
+## 앱 개요
+- Accessbility Service를 통해 알림을 보내고, 해당 시간동안 앱을 잠급니다.
+- Alarm을 통해 정해진 시간에 휴대폰 종료 시간이라는 알림을 보냅니다.
